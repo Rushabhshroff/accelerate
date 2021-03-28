@@ -1,0 +1,25 @@
+.timer-button {
+    position: relative;
+    background-color: var(--ion-color-light);
+    border-radius: 10px;
+    transition: 0.1s;
+    width: 50px;
+    overflow: hidden;
+    &.active {
+        --padding-start: 0 !important;
+        --padding-end: 0 !important;
+        width: 100px;
+        .fill {
+            display: block;
+            position: absolute;
+            left: 0px;
+            top: 0;
+            bottom: 0;
+            transition: 1s;
+            background-color: var(--ion-color-primary);
+        }
+    }
+    .fill {
+        display: none;
+    }
+}

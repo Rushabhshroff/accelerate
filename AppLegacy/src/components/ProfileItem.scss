@@ -1,0 +1,30 @@
+.profile-item-container{
+    width: 100%;
+    margin-top: 25px;
+    padding: 10px;
+}
+.profile-item{
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding-bottom: 10px;
+    background-color: var(--ion-color-light);
+    border-radius: 10px;
+    ion-avatar{
+        position: absolute;
+        background-color: inherit;
+        top: -30px;
+    }
+    .email{
+        font-size: 14px;
+    }
+    .edit{
+        width: 100%;
+        padding: 10px;
+        font-size: 14px;
+        text-align: end;
+    }
+    
+}

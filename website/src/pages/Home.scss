@@ -1,0 +1,35 @@
+section[id] {
+    width: 100%;
+    min-height: calc(100vh);
+    background-repeat: no-repeat !important;
+    background-clip: border-box;
+    background-size: cover !important;
+    background-color: var(--ion-color-dark);
+    ion-col {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+    }
+    h1 {
+        font-size: 35px;
+        text-align: center;
+    }
+    h6 {
+        font-size: 16px;
+        text-align: center;
+    }
+    .row.reverse {
+        flex-direction: row-reverse;
+    }
+}
+.home {
+    overflow: auto;
+}
+@media (max-width: 572px) {
+    section[id] {
+        .row.reverse {
+            flex-direction: row;
+        }
+    }
+}

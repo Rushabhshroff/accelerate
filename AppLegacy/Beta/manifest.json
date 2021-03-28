@@ -1,0 +1,21 @@
+{
+  "short_name": "Accelerate",
+  "name": "Accelerate",
+  "icons": [
+    {
+      "src": "assets/icon/ic_white.png",
+      "type": "image/png",
+      "sizes": "512x512"
+    },
+    {
+      "src": "assets/icon/icon-512x512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "maskable"
+    }
+  ],
+  "start_url": ".",
+  "display": "standalone",
+  "theme_color": "#FC5350",
+  "background_color": "#FC5350"
+}

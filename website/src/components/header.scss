@@ -1,0 +1,50 @@
+header {
+    display: flex;
+    position: sticky;
+    z-index: 1050;
+    background-color: var(--ion-color-dark) !important;
+    top: 0;
+    flex-direction: row;
+    align-items: center;
+    min-height: 55px;
+    background-color: rgba($color: var(--ion-color-light-rgb), $alpha: 0.05);
+    box-shadow: 1px 1px 8px rgba($color: #ffffff, $alpha: 0.05);
+    .brand {
+        display: flex;
+        flex: 1;
+        justify-content: center;
+        align-items: center;
+    }
+    h1{
+        margin: 0px;
+    }
+    a {
+        margin: 0px 16px;
+        position: relative;
+        text-decoration: none;
+        color: var(--ion-text-color);
+        text-transform: uppercase;
+        font-size: large;
+        transition: color 0.1s ease;
+        font-weight: bold;
+        padding: 0 5px;
+        &:hover {
+            color: var(--ion-color-primary);
+        }
+    }
+    .navlinks {
+        display: flex;
+        flex: 1;
+        height: 100%;
+        justify-content: center;
+        align-self: center;
+    }
+}
+
+@media (max-width: 768px) {
+    header {
+        a.link {
+            display: none;
+        }
+    }
+}

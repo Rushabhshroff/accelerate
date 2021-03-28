@@ -1,0 +1,32 @@
+.logs-tab {
+    .title {
+        font-size: 14px;
+        display: block;
+        text-transform: capitalize;
+    }
+    .current-value {
+        font-size: 12px;
+        display: block;
+        color: var(--ion-color-medium);
+    }
+    ion-item{
+        padding: 0px 0;
+    }
+    .section-header{
+        font-size: 12px;
+        color: var(--ion-color-medium);
+        margin: 0px 16px;
+    }
+}
+
+.logs-page{
+    .date{
+        font-weight: bold;
+        font-size: 14px;
+    }
+    .value{
+        font-weight: bold;
+        color: var(--ion-color-medium);
+        font-size: 14px;
+    }
+}

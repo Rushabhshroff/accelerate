@@ -1,0 +1,38 @@
+.exercise-item {
+    width: 100%;
+    ion-col {
+        text-transform: uppercase;
+        text-align: center;
+        background-color: inherit;
+    }
+    ion-item.head {
+        height: 35px;
+        font-size: 10px;
+        color: rgba($color: var(--ion-color-dark-rgb), $alpha: 0.7);
+    }
+
+    ion-item.set-item {
+        font-size: 14px;
+        color: rgba($color: var(--ion-color-dark-rgb), $alpha: 1);
+        ion-button {
+            transition: 0.3s;
+            background-color: rgba($color: var(--ion-color-light-rgb), $alpha: 1) !important;
+            height: 35px;
+            color: var(--ion-color-medium);
+        }
+        ion-input {
+            background-color: var(--ion-color-light) !important;
+        }
+        &.done {
+            ion-button {
+                background-color: rgba($color: var(--ion-color-primary-rgb), $alpha: 1) !important;
+                height: 35px;
+                color: var(--ion-color-light);
+                border-radius: 10px;
+            }
+            ion-input {
+                background-color: inherit !important;
+            }
+        }
+    }
+}

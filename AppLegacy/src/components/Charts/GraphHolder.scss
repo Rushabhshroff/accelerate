@@ -1,0 +1,11 @@
+.graph-holder{
+    height: calc(100vw);
+    max-height: 300px;
+    margin: 10px 10px;
+}
+.chart-scroller{
+    height: 100%;
+    width: 100%;
+    overflow-y: hidden;
+    overflow-x: auto;
+}

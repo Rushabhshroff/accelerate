@@ -1,0 +1,13 @@
+{
+  "appId": "fitness.accelerate",
+  "appName": "accelerate",
+  "bundledWebRuntime": false,
+  "npmClient": "npm",
+  "webDir": "build",
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 2
+    }
+  },
+  "cordova": {}
+}

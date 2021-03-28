@@ -1,0 +1,32 @@
+.settings {
+    .segment-header {
+        font-weight: bolder;
+        font-size: 14px;
+        color: var(--ion-color-primary);
+        max-height: 30px;
+    }
+    .segment-item {
+        margin: 15px 0;
+        ion-select {
+            padding: 0 !important;
+            color: rgba($color: var(--ion-color-dark-rgb), $alpha: 0.6);
+            font-size: 12px;
+            &::part(icon) {
+                display: none;
+            }
+        }
+        ion-text{
+            line-height: 0.5px;
+        }
+    }
+    .light-text {
+        color: rgba($color: var(--ion-color-dark-rgb), $alpha: 0.6);
+        font-size: 12px;
+    }
+    .version{
+        margin-top: 20px;
+        &::before{
+            content: 'v ';
+        }
+    }
+}
