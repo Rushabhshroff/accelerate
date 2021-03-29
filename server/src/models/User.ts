@@ -33,11 +33,13 @@ export const UserSchema = new Schema<UserSchema>({
             line1: {type: String, required: [true, "Line1 is required"]},
             line2: {type: String, required: [true, "Line2 is required"]},
             pincode: {type: String, required: [true, "Pincode is required"]},
+            city: {type: String, required: [true, "City is required"]},
+            state: {type: String, required: [true, "State is required"]},
+            country: {type: String, required: [true, "Country is required"]},
             point: {
                 type: {type: String, required: true},                
                 coordinates: { type: [Number], required: true}
-            },        
-           
+            },           
         }
     },
     profilePicUrl: {type: String, required: false},
