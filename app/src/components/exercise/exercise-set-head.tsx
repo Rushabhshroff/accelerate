@@ -21,7 +21,7 @@ export function ExerciseSetHead(props: ExerciseSetHead) {
     return (
         <IonItem lines='none' className='text-transform-up small row-center ion-no-padding exercise-set-head'>
             <IonCol size='2' className='text-light table-item'>Set</IonCol>
-            <IonCol className='text-light table-item'>Prev</IonCol>
+            {liveMode?<IonCol className='text-light table-item'>Prev</IonCol>:null}
             {headers.map((h) => {
                 return (
                     <IonCol key={h} size='2' className='text-light table-item'>{TitleMap[h]}</IonCol>

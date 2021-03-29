@@ -46,7 +46,6 @@ export class AppSettings {
     }
     static save() {
         return connection<AppSettings>().put(AppSettings.current).then(r => {
-            console.log(r)
             AppSettings.current._rev = r.rev
             return r.ok
         }).catch((err) => {

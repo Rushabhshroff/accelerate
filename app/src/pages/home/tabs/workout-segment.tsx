@@ -4,6 +4,7 @@ import moment from 'moment'
 import React, { useEffect, useState } from 'react'
 import { RouteComponentProps } from 'react-router'
 import { EditWorkout, HorizontalCalender } from '../../../components'
+import { WorkoutHistoryList } from '../../../components/workout/workout-history-list'
 import { Exercise, Workout } from '../../../database/models'
 import { WorkoutController } from '../../../utils'
 import './styles.scss'
@@ -72,6 +73,7 @@ export const WorkoutSegment: React.FC<RouteComponentProps> = (props) => {
     return (
         <>
             <HorizontalCalender onSelectDate={SetDate} />
+            <WorkoutHistoryList date={date.toDate()} />
             <IonFab className={date.isAfter(moment()) ? 'fab-hide' : ''} slot='fixed' vertical='bottom' horizontal='end'>
                 <IonFabButton onClick={HandleWorkoutPress}>
                     <IonIcon icon={add} />

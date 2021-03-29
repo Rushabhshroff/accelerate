@@ -35,6 +35,40 @@
     ion-item-options {
         border-bottom: none;
     }
+    .exercise-set {
+        &.normal.done {
+            ion-col {
+                background-color: rgba(var(--ion-color-success-rgb), 0.4);
+            }
+            .checkmark-box {
+                background-color: var(--ion-color-success);
+            }
+        }
+        &.warmup.done {
+            ion-col {
+                background-color: rgba(var(--ion-color-warning-rgb), 0.4);
+            }
+            .checkmark-box {
+                background-color: var(--ion-color-warning);
+            }
+        }
+        &.drop.done {
+            ion-col {
+                background-color: rgba(var(--ion-color-primary-rgb), 0.4);
+            }
+            .checkmark-box {
+                background-color: var(--ion-color-primary);
+            }
+        }
+        &.failure.done {
+            ion-col {
+                background-color: rgba(var(--ion-color-danger-rgb), 0.4);
+            }
+            .checkmark-box {
+                background-color: var(--ion-color-danger);
+            }
+        }
+    }
 }
 .circle {
     border-radius: 50%;
@@ -50,8 +84,20 @@
     ion-col {
         height: 100%;
     }
+    .table-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
 }
 .exercise-set {
+    .table-item {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
     ion-col {
         height: 100%;
         color: var(--ion-color-dark);
@@ -85,38 +131,6 @@
             color: var(--ion-color-light);
         }
     }
-    &.normal.done {
-        ion-col {
-            background-color: rgba(var(--ion-color-success-rgb), 0.4);
-        }
-        .checkmark-box {
-            background-color: var(--ion-color-success);
-        }
-    }
-    &.warmup.done {
-        ion-col {
-            background-color: rgba(var(--ion-color-warning-rgb), 0.4);
-        }
-        .checkmark-box {
-            background-color: var(--ion-color-warning);
-        }
-    }
-    &.drop.done {
-        ion-col {
-            background-color: rgba(var(--ion-color-primary-rgb), 0.4);
-        }
-        .checkmark-box {
-            background-color: var(--ion-color-primary);
-        }
-    }
-    &.failure.done {
-        ion-col {
-            background-color: rgba(var(--ion-color-danger-rgb), 0.4);
-        }
-        .checkmark-box {
-            background-color: var(--ion-color-danger);
-        }
-    }
 }
 .chart-holder {
     margin: 5px 2%;
@@ -124,12 +138,12 @@
     border-radius: 5px;
     border: solid var(--ion-color-medium) 1px;
 }
-.horizontal-scroll{
-    &::-webkit-scrollbar{
+.horizontal-scroll {
+    &::-webkit-scrollbar {
         display: none;
     }
     scrollbar-width: 0px;
-    ion-chip{
+    ion-chip {
         min-width: 150px;
         justify-content: center;
         align-items: center;

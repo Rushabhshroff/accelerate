@@ -2,7 +2,7 @@ import { IonButton, IonIcon, useIonModal } from '@ionic/react'
 import { timerOutline } from 'ionicons/icons'
 import React, { useEffect, useState } from 'react'
 import { TimerController } from '../../utils/timer-controller'
-import { Timer } from '../core/Timer'
+import { Timer } from './Timer'
 import './styles.scss'
 interface TimerButtonProps {
 

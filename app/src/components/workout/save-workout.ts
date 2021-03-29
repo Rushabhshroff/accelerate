@@ -11,6 +11,7 @@ export async function SaveWorkout(workout: Workout, exercises: Exercise[], asTem
             e.filterSets();
             if (e.sets.length > 0) {
                 e.timestamp = w.startTimestamp
+                e.workoutId = w._id
                 await e.save()
                 exs.push(e)
             }

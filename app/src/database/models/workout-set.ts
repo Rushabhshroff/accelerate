@@ -22,8 +22,11 @@ export class WorkoutSet implements WorkoutSet {
     distance?: number | undefined;
     weight?: number | undefined;
     timestamp?: number | undefined;
-    constructor() {
+    constructor(ob?: WorkoutSet) {
         this._id = v1()
+        if (ob) {
+            Object.assign(this, ob)
+        }
     }
     get done() {
         return this.timestamp != undefined

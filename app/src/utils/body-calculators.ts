@@ -1,3 +1,3 @@
 export function oneRM(weight: number, reps: number) {
-    return weight * (36 / (37 - reps))
+    return Math.round(weight * (36 / (37 - reps)))
 }

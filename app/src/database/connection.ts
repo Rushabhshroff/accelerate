@@ -19,5 +19,5 @@ export async function init_database() {
     await connection().createIndex({ index: { fields: ['type'] } })
     await connection().createIndex({ index: { fields: ['name'] } })
     await connection().createIndex({ index: { fields: ['timestamp'] } })
-
+    await connection().destroy()
 }

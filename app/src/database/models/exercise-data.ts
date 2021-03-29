@@ -1,7 +1,7 @@
 import { BodyPart, ExerciseCategory } from "./exercise";
 import Dataset from '../dataset.json'
 import model from "../model";
-import { Exercise } from "..";
+import { Exercise, WorkoutSet } from "..";
 export interface IExerciseInfo {
     _id: string,
     exerciseName: string,
@@ -21,7 +21,11 @@ export class ExerciseInfo extends model<IExerciseInfo>('exercise_info') {
                 exerciseId: this._id
             }
         }).then((res) => {
-            return res.docs.map((d => new Exercise(d)))
+            return res.docs.map((d => {
+                let e = new Exercise(d)
+                e.sets = e.sets.map((s) => new WorkoutSet(s))
+                return e;
+            }))
         })
     }
 }

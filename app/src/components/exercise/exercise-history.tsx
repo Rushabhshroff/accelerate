@@ -12,6 +12,8 @@ export const ExerciseHistory: React.FC<ExerciseHistory> = (props) => {
     const [history, SetHistory] = useState<Exercise[]>([])
     useEffect(() => {
         exercise.getHistory().then((res) => {
+            res = res.sort((a,b)=>(b.timestamp||0) - (a.timestamp||0))
+            console.log(res)
             SetHistory(res)
         })
     }, [props.exercise])

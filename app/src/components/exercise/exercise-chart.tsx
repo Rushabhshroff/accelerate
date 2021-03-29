@@ -11,16 +11,48 @@ export interface ExerciseChart {
     history: Exercise[]
 }
 export const ExerciseChart: React.FC<ExerciseChart> = (props) => {
+    const options = {
+        chart: {
+            toolbar: {
+                show: false
+            }
+        },
+        theme: {
+            monochrome: {
+                enabled: true,
+                color: CSS.variable('--ion-color-primary')
+            },
+        },
+        noData: {
+            text: "No Data",
+            align: 'center',
+            verticalAlign: 'middle',
+            offsetX: 0,
+            offsetY: 0,
+            style: {
+                fontSize: '14px',
+            }
+        },
+        markers: {
+            size: 5
+        },
+        yaxis: {
+            show: true,
+        },
+        xaxis: {
+            type: 'datetime'
+        }
+    }
     const [duration, SetDuration] = useState<ChartDuration>('3m')
     const [chartType, SetChartType] = useState<ChartType>(ExerciseGraphOptions[props.exercise.category][0])
-    const [series, SetSeries] = useState<any[][]>([])
+    const [series, SetSeries] = useState<any[]>([])
     const HandleDurationChange = (val: ChartDuration) => {
         SetDuration(val)
     }
     useEffect(() => {
         let series = ChartFunctionMap[chartType](props.history, duration)
         SetSeries(series)
-    }, [chartType])
+    }, [chartType,props.history,duration])
     return (
         <div>
             <ExerciseListItem noDetail exercise={props.exercise} >
@@ -37,13 +69,14 @@ export const ExerciseChart: React.FC<ExerciseChart> = (props) => {
                     series={series}
                     width="100%"
                     height={200}
+                    type='area'
                 />
             </div>
             <div className='horizontal-scroll'>
                 {ExerciseGraphOptions[props.exercise.category].map((e) => {
                     let selected = e === chartType
                     return (
-                        <IonChip onClick={() => SetChartType(e)} color={selected ? 'primary' : 'medium'} outline >{e.replaceAll('-', ' ')}</IonChip>
+                        <IonChip key={e} onClick={() => SetChartType(e)} color={selected ? 'primary' : 'medium'} outline >{e.replaceAll('-', ' ')}</IonChip>
                     )
                 })}
             </div>
@@ -51,35 +84,4 @@ export const ExerciseChart: React.FC<ExerciseChart> = (props) => {
     )
 }
 
-const options = {
-    chart: {
-        toolbar: {
-            show: false
-        }
-    },
-    theme: {
-        monochrome: {
-            enabled: true,
-            color: CSS.variable('--ion-color-primary')
-        },
-    },
-    noData: {
-        text: "No Data",
-        align: 'center',
-        verticalAlign: 'middle',
-        offsetX: 0,
-        offsetY: 0,
-        style: {
-            fontSize: '14px',
-        }
-    },
-    markers: {
-        size: 5
-    },
-    yaxis: {
-        show: true,
-    },
-    xaxis: {
-        type: 'datetime'
-    }
-}
+

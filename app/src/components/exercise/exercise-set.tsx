@@ -63,7 +63,7 @@ export const ExerciseSet: React.FC<ExerciseSet> = (props) => {
                         {set.setType == 'warmup' ? "W" : props.index}
                     </IonButton>
                 </IonCol>
-                <IonCol className='text-light table-item'>-</IonCol>
+                {liveMode ? <IonCol className='text-light table-item'>-</IonCol> : null}
                 {inputs.map((i) => {
                     return (
                         <IonCol key={i} size='2' className='table-item'>

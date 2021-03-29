@@ -114,7 +114,7 @@ ion-text {
     justify-content: center;
     align-items: center;
 }
-.page{
+.page {
     width: 100%;
     height: 100%;
     display: flex;
@@ -143,15 +143,23 @@ ion-text {
         }
     }
 }
-.caret{
-    &::after{
+.caret {
+    &::after {
         content: "⮟";
     }
 }
-.horizontal-scroll{
+.horizontal-scroll {
     width: 100%;
     overflow: auto;
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
+}
+.loader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1;
+    height: 100%;
+    width: 100%;
 }

@@ -5,7 +5,7 @@ import React, { useEffect, useState } from 'react'
 import { Exercise, Workout } from '../../database/models'
 import { ExerciseValues } from '../../database/models/exercise-values'
 import { useArrayReduer, useObjectReducer } from '../../hooks'
-import { Duration } from '../../utils'
+import { Duration, WorkoutController } from '../../utils'
 import { Header, TouchableOpcity, WorkoutSvg } from '../core'
 import { ExerciseList } from '../exercise'
 import { ExerciseItem } from '../exercise/exercise-item'
@@ -13,7 +13,7 @@ import { CreateSuperset } from './create-superset'
 import { ExerciseReorder } from './exercise-reorder'
 import { SaveWorkout, ValidateWorkout } from './save-workout'
 import './styles.scss'
-import { TimerButton } from './timer-button'
+import { TimerButton } from '../core/timer-button'
 export interface EditWorkout {
     liveMode?: boolean,
     onDismiss?: () => void,
@@ -52,16 +52,15 @@ export const EditWorkout: React.FC<EditWorkout> = (props) => {
         exercises.forEach((ex) => {
             ExerciseValues.Add(sum, ex.sum());
         })
-        console.log(sum);
         SetSummation(sum)
     }
     const Save = () => {
         const f = async () => {
             try {
                 await SaveWorkout(workout, exercises);
-                console.log("Saved")
+                WorkoutController.reset()
+                if (props.onDismiss) props.onDismiss()
             } catch (err) {
-                console.log(err)
                 ShowToast(err.message, 1000)
             }
         }

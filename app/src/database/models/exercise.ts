@@ -28,6 +28,7 @@ export interface IExercise {
 export class Exercise extends model<IExercise>('exercise') {
     constructor(ob?: IExercise) {
         super(ob)
+        this.sets = this.sets.map((s) => new WorkoutSet(s))
     }
     static from(exerciseId: string, workoutId: string) {
         let ex = ExerciseData.find(exerciseId);
@@ -51,7 +52,6 @@ export class Exercise extends model<IExercise>('exercise') {
             ExerciseValues.Add(res, val)
         })
         res.sets = this.sets.filter((s) => s.timestamp != undefined).length
-        console.log(res);
         return res;
     }
     max() {
