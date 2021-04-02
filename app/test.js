@@ -3,9 +3,9 @@ const data = require('./src/database/dataset.json')
 
 
 let d = data.map((s) => {
-    s['other-bodyparts'] = []
+    s['equipment'] = ""
     return s
 })
 
 
-fs.writeFileSync('./src/database/dataset-new.json', JSON.stringify(d))
+fs.writeFileSync('./src/database/dataset.json', JSON.stringify(d))
