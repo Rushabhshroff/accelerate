@@ -4092,7 +4092,7 @@
       "mediaType": "image",
       "thumbnail": "/thutrIlyTSoHy.png",
       "imageUrl": "/imgtrIlyTSoHy.jpg",
-      "other-bodyparts": []
+      "other-bodyparts": ["lats"]
   },
   {
       "_id": "ZrU2uhPxBU",
@@ -4108,7 +4108,7 @@
       "mediaType": "image",
       "thumbnail": "/thuZrU2uhPxBU.png",
       "imageUrl": "/imgZrU2uhPxBU.jpg",
-      "other-bodyparts": []
+      "other-bodyparts": ["forearms"]
   },
   {
       "_id": "TmxI2bYnAh",
@@ -4135,6 +4135,6 @@
       "mediaType": "image",
       "thumbnail": "/thuMJnwkggkqX.png",
       "imageUrl": "/imgMJnwkggkqX.jpg",
-      "other-bodyparts": []
+      "other-bodyparts": ["thighs", "calves", "hamstrings"]
   }
 ]

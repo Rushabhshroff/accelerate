@@ -1,16 +1,18 @@
-declare type ResponseCode<T> = {
-    [k in keyof T]: string;
-};
-export declare const Codes: ResponseCode<{
-    "0000": string;
-    "0011": string;
-    "0012": string;
-    "0404": string;
-    "no-auth": string;
-    "invalid-jwt": string;
-    "user-not-found": string;
-    forbidden: string;
-}> & {
-    [Key: string]: string;
-};
-export {};
+type ResponseCode<T> = {
+    [k in keyof T]: string
+}
+function MakeCodes<T = unknown>(code: T) {
+    let x: any = code;
+    return x as ResponseCode<T> & { [Key: string]: string }
+}
+export const Codes = MakeCodes({
+    "0000": "Success",
+    "0011": "Invalid Phone Number.",
+    "0012": "Invalid Otp input.",
+    "0404": "Item not found",
+    /*          Maja nai avi
+    "no-auth": "Please provide authorization token",
+    "invalid-jwt": "JWT token is not valid",
+    "user-not-found": "User Not Found",
+    "forbidden": "Access Forbidden" */
+})

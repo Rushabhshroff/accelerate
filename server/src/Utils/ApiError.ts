@@ -10,6 +10,6 @@ export default class ApiError extends Error {
         this.name = 'ApiError'
     }
     toResponseData() {
-        return ResponseData.code(this.resultCode).setError(this.message);
+        return ResponseData.get(this.resultCode, undefined);
     }
 }
