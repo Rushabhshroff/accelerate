@@ -21,7 +21,6 @@ export const WorkoutHistoryList: React.FC<WorkoutHistoryList> = (props) => {
                     ]
                 }
             }).then((res) => res.docs.map((d) => new Workout(d)));
-            console.log(workouts);
             SetWorkouts(workouts)
         })().catch((err) => {
 

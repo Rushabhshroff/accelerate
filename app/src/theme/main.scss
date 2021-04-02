@@ -29,6 +29,8 @@ section {
     display: flex;
     flex-direction: column;
     padding: 15px 10px 15px 5px;
+    background-color: var(--ion-background-color, --background, #fff);
+    overflow: auto;
 }
 .autosized-modal {
     .modal-wrapper {
@@ -162,4 +164,7 @@ ion-text {
     flex: 1;
     height: 100%;
     width: 100%;
+}
+.border-top {
+    border-top: solid 1px var(--ion-color-medium);
 }

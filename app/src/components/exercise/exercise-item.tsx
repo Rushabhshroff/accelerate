@@ -1,6 +1,6 @@
 import { IonButton, IonButtons, IonCol, IonIcon, IonItem, IonRow, IonText, IonTextarea, useIonActionSheet, useIonModal, useIonPicker } from '@ionic/react'
 import { add, checkmark, close, ellipsisHorizontal, ellipsisHorizontalCircleOutline, ellipsisVertical, gitCompareOutline, remove, repeatOutline, timerOutline } from 'ionicons/icons'
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Exercise, WorkoutSet } from '../../database/models'
 import { ExerciseData } from '../../database/models/exercise-data'
 import { ExercisePropsMap } from '../../database/models/exercise-props-map'
@@ -22,7 +22,6 @@ interface ExerciseItem {
 }
 const TimerRange = Duration.range(0, 600, 5);
 export const ExerciseItem: React.FC<ExerciseItem> = (props) => {
-
     const [Show] = useIonActionSheet();
     const [ShowExercisePicker, HideExercisePicker] = useIonModal(() => <ExerciseList
         selectionMode={true}
@@ -42,6 +41,7 @@ export const ExerciseItem: React.FC<ExerciseItem> = (props) => {
     />)
     const [ShowTimerPicker] = useIonPicker();
     const [exercise, SetExercise] = useObjectReducer(props.exercise)
+    const [prevExercise, SetPrevExercise] = useState<Exercise | undefined>(undefined);
     const info = ExerciseData.find(exercise.exerciseId);
     const liveMode = props.liveMode || false
     useEffect(() => {
@@ -126,6 +126,12 @@ export const ExerciseItem: React.FC<ExerciseItem> = (props) => {
         if (props.OnMutate) props.OnMutate()
         SetExercise({})
     }
+    useEffect(() => {
+        exercise.previous().then((res) => {
+            console.log(res)
+            SetPrevExercise(res)
+        })
+    }, [])
     var setCount = 0;
     return (
         <div className='exercise-item py-3'>

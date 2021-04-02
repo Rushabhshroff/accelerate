@@ -24,7 +24,7 @@ export function ExerciseSetHead(props: ExerciseSetHead) {
             {liveMode?<IonCol className='text-light table-item'>Prev</IonCol>:null}
             {headers.map((h) => {
                 return (
-                    <IonCol key={h} size='2' className='text-light table-item'>{TitleMap[h]}</IonCol>
+                    <IonCol key={h} size={liveMode?'2':'4'} className='text-light table-item'>{TitleMap[h]}</IonCol>
                 )
             })}
             {liveMode ? <IonCol size='2' className='text-light table-item'><IonIcon size="medium" className='text-light' icon={checkmark} /></IonCol> : null}

@@ -63,7 +63,7 @@ export const ExerciseList: React.FC<ExerciseListProps> = (props) => {
                         <IonIcon icon={filter} />
                     </IonButton>
                     <PopoverButton>
-                        <PopoverItem>Create Exercise</PopoverItem>
+                        <PopoverItem button >Create Exercise</PopoverItem>
                     </PopoverButton>
                 </IonButtons>
             </Header>

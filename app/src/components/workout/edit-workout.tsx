@@ -11,11 +11,13 @@ import { ExerciseList } from '../exercise'
 import { ExerciseItem } from '../exercise/exercise-item'
 import { CreateSuperset } from './create-superset'
 import { ExerciseReorder } from './exercise-reorder'
-import { SaveWorkout, ValidateWorkout } from './save-workout'
+import { SaveWorkout, ValidateWorkout } from './workout-functions'
+import { WorkoutStatsHeader } from './workout-stats-header'
 import './styles.scss'
 import { TimerButton } from '../core/timer-button'
 export interface EditWorkout {
     liveMode?: boolean,
+    templateMode?: boolean,
     onDismiss?: () => void,
     onDiscard?: () => void
     workout?: Workout,
@@ -24,6 +26,7 @@ export interface EditWorkout {
 
 export const EditWorkout: React.FC<EditWorkout> = (props) => {
     const liveMode = props.liveMode
+    const templateMode = props.templateMode
     const [ShowAlert] = useIonAlert()
     const [ShowToast] = useIonToast()
     const [workout, SetWorkout] = useObjectReducer(props.workout || new Workout({ name: "Workout", startTimestamp: Date.now() }))
@@ -57,7 +60,7 @@ export const EditWorkout: React.FC<EditWorkout> = (props) => {
     const Save = () => {
         const f = async () => {
             try {
-                await SaveWorkout(workout, exercises);
+                await SaveWorkout(workout, exercises, liveMode, templateMode);
                 WorkoutController.reset()
                 if (props.onDismiss) props.onDismiss()
             } catch (err) {
@@ -65,7 +68,7 @@ export const EditWorkout: React.FC<EditWorkout> = (props) => {
             }
         }
         let valid = ValidateWorkout(exercises);
-        if (!valid) {
+        if (!valid && !templateMode) {
             ShowAlert('There are invalid sets. They will be discarded if you continue.', [
                 { text: 'continue', handler: () => f() },
                 { text: 'Fix it', role: 'cancel' }
@@ -77,7 +80,7 @@ export const EditWorkout: React.FC<EditWorkout> = (props) => {
     const [OpenExerciseModal, CloseExerciseModal] = useIonModal(() => <ExerciseList onSelectionChange={OnAddExercises} selectionMode={true} selectionType='multiple' onDismiss={CloseExerciseModal} />)
     const [ShowReorderModal, CloseReorderModal] = useIonModal(() => <ExerciseReorder OnDismiss={CloseReorderModal} exercises={exercises} OnDone={(ex) => SetExercises([...ex])} />)
     const [OpenSupersetModal, CloseSupersetModal] = useIonModal(() => <CreateSuperset OnDismiss={CloseSupersetModal} exercises={exercises} OnDone={(ex) => SetExercises([...ex])} />)
-    const [OpenEditWorkoutDetailsModal, CloseEditWorkoutDetailsModal] = useIonModal(() => <EditWorkoutDetails OnDismiss={CloseEditWorkoutDetailsModal} workout={workout} OnDone={(w) => SetWorkout(w)} />)
+    const [OpenEditWorkoutDetailsModal, CloseEditWorkoutDetailsModal] = useIonModal(() => <EditWorkoutDetails OnDismiss={CloseEditWorkoutDetailsModal} workout={workout} OnDone={(w) => SetWorkout(w)} templateMode={templateMode} />)
     return (
         <IonPage>
             <Header>
@@ -89,7 +92,7 @@ export const EditWorkout: React.FC<EditWorkout> = (props) => {
                 </IonButtons>
                 <TouchableOpcity>
                     <IonTitle className='block-text text-center' >{workout.name} </IonTitle>
-                    <IonText className='block-text text-center text-light small'>{moment(workout.startTimestamp).format('MMM ddd DD yyy hh:mm A')}</IonText>
+                    {!templateMode ? <IonText className='block-text text-center text-light small'>{moment(workout.startTimestamp).format('MMM ddd DD yyy hh:mm A')}</IonText> : null}
                 </TouchableOpcity>
                 <IonButtons slot='end'>
                     <IonButton onClick={() => OpenEditWorkoutDetailsModal({ mode: 'ios', swipeToClose: true, cssClass: 'autosized-modal', showBackdrop: true })}>
@@ -102,21 +105,7 @@ export const EditWorkout: React.FC<EditWorkout> = (props) => {
                 </IonButtons>
 
             </Header>
-            {liveMode ? <IonItem lines='full'>
-                <DurationText liveMode={liveMode} workout={workout} />
-                <IonCol className='text-center'>
-                    <IonText className='block-text text-light small'>Volume</IonText>
-                    <IonText className='block-text small'>{summation.volume} Kg</IonText>
-                </IonCol>
-                <IonCol className='text-center'>
-                    <IonText className='block-text text-light small'>Distance</IonText>
-                    <IonText className='block-text small'>{summation.distance} Km</IonText>
-                </IonCol>
-                <IonCol className='text-center'>
-                    <IonText className='block-text text-light small'>Sets</IonText>
-                    <IonText className='block-text small'>{summation.sets}</IonText>
-                </IonCol>
-            </IonItem> : null}
+            {liveMode ? <WorkoutStatsHeader liveMode={liveMode} workout={workout} summation={summation} /> : null}
             <IonContent>
                 <EmptyListPlaceholder hide={exercises.length > 0} />
                 {exercises.map((ex) => {
@@ -149,15 +138,16 @@ function EmptyListPlaceholder(props: any) {
 interface EditWorkoutDetails {
     workout: Workout,
     OnDismiss?: () => void
-    OnDone?: (workout: Workout) => void
+    OnDone?: (workout: Workout) => void,
+    templateMode?: boolean
 }
 function EditWorkoutDetails(props: EditWorkoutDetails) {
     const [workout, SetWorkout] = useState(props.workout);
-
+    const templateMode = props.templateMode
     return (
         <IonCard className='edit-details-form'>
             <IonCardHeader>
-                <IonText className='block-text xx-large'>Edit Workout Details</IonText>
+                <IonText className='block-text xx-large'>Edit {templateMode ? "Routine" : "Workout"} Details</IonText>
             </IonCardHeader>
             <IonItem className='form-input' lines='none'>
                 <IonInput onIonChange={(e) => {
@@ -165,22 +155,22 @@ function EditWorkoutDetails(props: EditWorkoutDetails) {
                     SetWorkout(x)
                 }} value={workout.name} placeholder='Workout Name' />
             </IonItem>
-            <IonItem className='form-input' lines='none'>
+            {!templateMode ? <IonItem className='form-input' lines='none'>
                 <IonDatetime onIonChange={(e) => {
                     if (e.detail.value) {
                         let x = Object.assign({}, workout, { startTimestamp: new Date(e.detail.value).getTime() })
                         SetWorkout(x)
                     }
                 }} value={new Date(workout.startTimestamp).toISOString()} displayFormat='YYYY-MM-DD HH:mm A' pickerFormat='YYYY-MM-DDTHH:mm' placeholder='Start Time' />
-            </IonItem>
-            <IonItem className='form-input' lines='none'>
+            </IonItem> : null}
+            {!templateMode ? <IonItem className='form-input' lines='none'>
                 <IonDatetime onIonChange={(e) => {
                     if (e.detail.value) {
                         let x = Object.assign({}, workout, { endTimestamp: new Date(e.detail.value).getTime() })
                         SetWorkout(x)
                     }
                 }} value={workout.endTimestamp ? new Date(workout.endTimestamp).toISOString() : undefined} displayFormat='YYYY-MM-DD HH:mm A' pickerFormat='YYYY-MM-DDTHH:mm' placeholder='End Time' />
-            </IonItem>
+            </IonItem> : null}
             <IonButton onClick={() => {
                 if (!workout.name) {
                     return;
@@ -195,41 +185,5 @@ function EditWorkoutDetails(props: EditWorkoutDetails) {
                 Save
             </IonButton>
         </IonCard>
-    )
-}
-
-interface DurationText {
-    workout: Workout
-    liveMode?: boolean
-}
-function DurationText(props: DurationText) {
-    const { liveMode, workout } = props
-    const { startTimestamp, endTimestamp } = workout
-    const [duration, SetDuration] = useState(new Duration(liveMode ? Date.now() - startTimestamp : 0))
-    useEffect(() => {
-        let interval: NodeJS.Timeout | undefined = undefined
-        if (endTimestamp) {
-            SetDuration(new Duration(Math.abs(startTimestamp - endTimestamp)))
-        } else {
-            if (liveMode) {
-                interval = setInterval(() => {
-                    let dur = new Duration(Date.now() - startTimestamp)
-                    SetDuration(dur);
-                }, 1000)
-            } else {
-                SetDuration(new Duration())
-            }
-        }
-        return () => {
-            if (interval) {
-                clearInterval(interval)
-            }
-        }
-    }, [workout])
-    return (
-        <IonCol className='text-center'>
-            <IonText className='block-text text-light small'>Duration</IonText>
-            <IonText className='block-text small'>{duration.toString()}</IonText>
-        </IonCol>
     )
 }

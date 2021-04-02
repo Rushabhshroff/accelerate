@@ -20,7 +20,7 @@ export interface ExerciseSet {
 export const ExerciseSet: React.FC<ExerciseSet> = (props) => {
     const ShowTimer = useRestTimer();
     const [set, UpdateSet] = useObjectReducer(props.set)
-    const done = set.timestamp !== undefined ? 'done' : '';
+    
     const inputs = Object.keys(ExercisePropsMap[props.exercise.category]);
     const [ShowSelectSetType, HideSelectSetType] = useIonPopover(<SetTypeOptions OnSelectOption={(op) => {
         UpdateSet({
@@ -39,6 +39,7 @@ export const ExerciseSet: React.FC<ExerciseSet> = (props) => {
         return defaultPlaceholders[key]
     }
     const disabled = props.disabled
+    const done = set.timestamp !== undefined && liveMode ? 'done' : '';
     const HandleInputChange = (key: string, value?: string | null) => {
         let update: any = {}
         if (value) {
@@ -57,7 +58,7 @@ export const ExerciseSet: React.FC<ExerciseSet> = (props) => {
     }, [set.timestamp])
     return (
         <IonItemSliding>
-            <IonItem detail={false} button lines='none' className={`small row-center ion-no-padding exercise-set ${set.setType} ${done}`}>
+            <IonItem detail={false} button={false} lines='none' className={`small row-center ion-no-padding exercise-set ${set.setType} ${done}`}>
                 <IonCol size='2' className='table-item'>
                     <IonButton disabled={disabled} onClick={() => ShowSelectSetType()} color={setTypeToColor[set.setType]} mode='md' fill='clear'>
                         {set.setType == 'warmup' ? "W" : props.index}
@@ -66,7 +67,7 @@ export const ExerciseSet: React.FC<ExerciseSet> = (props) => {
                 {liveMode ? <IonCol className='text-light table-item'>-</IonCol> : null}
                 {inputs.map((i) => {
                     return (
-                        <IonCol key={i} size='2' className='table-item'>
+                        <IonCol key={i} size={liveMode?'2':'4'} className='table-item'>
                             <IonInput disabled={disabled} onIonChange={(e) => HandleInputChange(i, e.detail.value)} value={set[i]} type={inputTypeMap[i]} placeholder={getPlaceholder(i)} />
                         </IonCol>
                     )

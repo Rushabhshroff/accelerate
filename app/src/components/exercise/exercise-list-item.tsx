@@ -16,7 +16,7 @@ export interface ExerciseListItem {
 export const ExerciseListItem: React.FC<ExerciseListItem> = (props) => {
     const ex = props.exercise;
     return (
-        <IonItem detail={props.noDetail ? false : true} mode='ios' onClick={props.selectionMode ? undefined : props.onClick} routerDirection='forward' routerLink={props.selectionMode ? undefined : `/exercise/${ex._id}`} button={!props.selectionMode} style={props.style} lines='none' className='exercise-list-item'>
+        <IonItem detail={props.noDetail ? false : true} mode='ios' onClick={props.selectionMode ? undefined : props.onClick} routerDirection='forward' routerLink={props.selectionMode || props.noDetail ? undefined : `/exercise/${ex._id}`} button={!props.selectionMode} style={props.style} lines='none' className='exercise-list-item'>
             <ExerciseThumbnail exerciseName={ex.exerciseName} thumbUrl={ex.thumbnail} />
             <div className='ml-3'>
                 <IonText className='block-text x-small'>{ex.exerciseName}</IonText>
