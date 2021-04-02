@@ -1,3 +1,7 @@
 export * from './edit-workout'
 export * from '../core/timer-button'
 export * from './exercise-reorder'
+export * from './workout-routine-list-item'
+export * from './workout-history-list-item'
+export * from './workout-history-list'
+export * from './workout-stats-header'

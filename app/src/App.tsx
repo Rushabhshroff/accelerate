@@ -32,11 +32,15 @@ import firebaseConfig from './configs/firebase.config.json'
 import { Timer } from './components/core/Timer';
 import Duration from './utils/duration';
 import { ExerciseList } from './components';
+import { WorkoutDetailsPage } from './pages/workout/workout-details';
+import { WorkoutRoutinesPage } from './pages/workout/workout-routine';
+import { ExerciseData, init_database } from './database';
 if (firebase.apps.length <= 0) {
   firebase.initializeApp(firebaseConfig)
 }
 const App: React.FC = () => {
   useEffect(() => {
+    InitializeApp()
     SetStatusBarStyle({ backgroundColor: CSS.variable('--ion-color-background') || '#ffffff', barStyle: StatusBarStyle.Dark })
   }, [])
   return (
@@ -44,8 +48,10 @@ const App: React.FC = () => {
       <IonReactRouter>
         <IonRouterOutlet animated={true}>
           <Route path="/home" render={(props) => <Home {...props} />} />
-          <Route path='/exercises' exact render={()=><ExerciseList />} />
+          <Route path='/exercises' exact render={() => <ExerciseList />} />
           <Route exact path='/exercise/:id' render={(props) => <ExerciseDetailsPage {...props} />} />
+          <Route exact path='/workout/:id' render={(props) => <WorkoutDetailsPage {...props} />} />
+          <Route exact path='/routine/:id' render={(props) => <WorkoutRoutinesPage {...props} />} />
           <Route exact path="/" render={(props) => <Redirect to='/home' />} />
         </IonRouterOutlet>
       </IonReactRouter>
@@ -54,3 +60,8 @@ const App: React.FC = () => {
 };
 
 export default App;
+
+export async function InitializeApp(){
+  await init_database()
+  await ExerciseData.Load()
+}

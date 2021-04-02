@@ -85,6 +85,30 @@ export class Exercise extends model<IExercise>('exercise') {
         let enables = ExercisePropsMap[this.category]
         this.sets = this.sets.filter((s) => s.validate(enables))
     }
+    previous() {
+        return Exercise.find({
+            selector: {
+                timestamp: { $gt: true },
+                exerciseId:this.exerciseId
+            },
+           sort: [{ timestamp: 'desc' }],
+            limit: 1
+        }).then((res) => {
+            if (res.docs.length > 0) {
+                return new Exercise(res.docs[0])
+            } else {
+                return undefined
+            }
+        }).catch((err) => {
+            console.log(err)
+            return undefined;
+        })
+    }
+    static clone(ob: Exercise) {
+        let n = Object.assign({}, ob) as any
+        delete n._id; delete n._rev; delete n._deleted;
+        return new Exercise(n);
+    }
 }
 
 export type ExerciseCategory = 'barbell' | 'dumbbell' | 'machine' | 'weighted-bodyweight' | 'assisted-body' | 'reps-only' | 'cardio' | 'duration'
