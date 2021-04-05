@@ -37,8 +37,10 @@ export const UserSchema = new Schema<UserIntf>({
             state: {type: String, required: [true, "State is required"]},
             country: {type: String, required: [true, "Country is required"]},
             point: {
-                title: {type: String, required: true},                
-                coordinates: { type: [Number], required: true}
+                type:{
+                    title: {type: String, required: true},                
+                    coordinates: { type: [Number], required: true}
+                }
             },
         }
     },

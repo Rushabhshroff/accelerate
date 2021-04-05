@@ -4,8 +4,8 @@
   "description": "",
   "main": "src/index.ts",
   "scripts": {
-    "build": "tsc -p .",
-    "run": "node build/index.js"
+    "build": "webpack --config webpack.config.js",
+    "run": "node dist/index.js"
   },
   "author": "",
   "license": "ISC",

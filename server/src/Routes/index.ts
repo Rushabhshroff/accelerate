@@ -5,6 +5,6 @@ import UserRoutes from './User';
 const Routes = Router()
 
 Routes.use('/user', UserRoutes);
-Routes.use('/auth', FitnessRoutes);
+Routes.use('/partners', FitnessRoutes);
 
 export default Routes;

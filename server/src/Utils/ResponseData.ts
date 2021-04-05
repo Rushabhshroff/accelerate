@@ -21,10 +21,10 @@ export default class ResponseData {
     }
 
     static get(code: string, message: string = "", data: any = undefined, error: any = undefined) {
-        if (message == undefined)
-            return new ResponseData({ resultCode: code, message: Codes[code], data: data, error: error})
+        if (message.length == 0)
+            return new ResponseData({ resultCode: code, message: Codes[code], data: data, error: error})        
         else
-            return new ResponseData({ resultCode: code, message: message, data: data, error: error})
+            return new ResponseData({ resultCode: code, message: message, data: data, error: error})        
     }
 
     

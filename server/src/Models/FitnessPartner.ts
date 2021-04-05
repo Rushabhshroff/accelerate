@@ -47,11 +47,9 @@ export const FitnessPartnerSchema = new Schema<FitnessPartnerIntf>({
     },
     profilePicUrl: {type: String, required: [true, "Profile picture is required for identification"]},
     verified: {type: Boolean, required: true},
-    documents: [{
-        type:{
+    documents: [{        
             title: {type: String, required: true},
-            proof: {type: String, required: true},
-        }
+            proof: {type: String, required: true},        
     }]
 });
 
