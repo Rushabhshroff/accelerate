@@ -7,7 +7,7 @@ interface ResponseDataIntf {
     error?: string
 }
 
-export class ResponseData {
+export default class ResponseData {
     resultCode: string
     message?: string
     data?: any = undefined
@@ -26,6 +26,8 @@ export class ResponseData {
         else
             return new ResponseData({ resultCode: code, message: message, data: data, error: error})
     }
+
+    
 
     parseAs<T>() {
         return this.data ? this.data as T : undefined

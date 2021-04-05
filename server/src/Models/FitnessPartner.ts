@@ -1,6 +1,6 @@
-import { Document, Schema } from 'mongoose';
+import { Document, Schema, model } from 'mongoose';
 
-export interface FitnessPartnersSchema extends Document{
+export interface FitnessPartnerIntf extends Document{
     name: string,
     phoneNumber: string,
     email: string,
@@ -26,7 +26,7 @@ export interface FitnessPartnersSchema extends Document{
     }[]
 }
 
-export const FitnessPartnersSchema = new Schema<FitnessPartnersSchema>({
+export const FitnessPartnerSchema = new Schema<FitnessPartnerIntf>({
     name: {type: String, required: [true, "Name is required"]},
     phoneNumber: {type: String, required: [true, "Phone number is required"]},
     email: {type: String, required: [true, "email is required"]},
@@ -45,7 +45,7 @@ export const FitnessPartnersSchema = new Schema<FitnessPartnersSchema>({
            
         }
     },
-    profilePicUrl: {type: String, required: [true, "Profile picture is required for identification"},
+    profilePicUrl: {type: String, required: [true, "Profile picture is required for identification"]},
     verified: {type: Boolean, required: true},
     documents: [{
         type:{
@@ -54,3 +54,5 @@ export const FitnessPartnersSchema = new Schema<FitnessPartnersSchema>({
         }
     }]
 });
+
+export const FitnessPartnerModel = model("fitnessPartner", FitnessPartnerSchema)

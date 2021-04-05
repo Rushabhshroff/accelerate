@@ -1,6 +1,6 @@
-import { Document, Schema } from 'mongoose';
+import { Document, Schema, model } from 'mongoose';
 
-export interface UserSchema extends Document{
+export interface UserIntf extends Document{
     name: string,
     phoneNumber: string,
     email: string,
@@ -21,7 +21,7 @@ export interface UserSchema extends Document{
     profilePicUrl?: string
 }
 
-export const UserSchema = new Schema<UserSchema>({
+export const UserSchema = new Schema<UserIntf>({
     name: {type: String, required: [true, "Name is required"]},
     phoneNumber: {type: String, required: [true, "Phone number is required"]},
     email: {type: String, required: [true, "email is required"]},
@@ -37,10 +37,12 @@ export const UserSchema = new Schema<UserSchema>({
             state: {type: String, required: [true, "State is required"]},
             country: {type: String, required: [true, "Country is required"]},
             point: {
-                type: {type: String, required: true},                
+                title: {type: String, required: true},                
                 coordinates: { type: [Number], required: true}
-            },           
+            },
         }
     },
     profilePicUrl: {type: String, required: false},
 });
+
+export const UserModel = model('user', UserSchema)

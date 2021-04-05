@@ -8,10 +8,11 @@ import Routes from './Routes'
 import http from 'http';
 
 const app = express()
-mongoose.connect("mongodb+srv://test:boul3n9L8iziqoih@test.1smdb.mongodb.net/test?retryWrites=true&w=majority", {
+
+mongoose.connect("mongodb+srv://admin:U6PXNTcCMvuWJQUH@cluster0.jkbm8.mongodb.net/myFirstDatabase?retryWrites=true&w=majority", {
     useNewUrlParser: true,    
     useUnifiedTopology: true })
-
+console.log("connected")
 app.use(cors());
 app.use(BodyParser);
 app.use(Routes);
@@ -19,10 +20,11 @@ app.use((err: Error | ApiError, req: Request, res: Response, next: NextFunction)
     if (err.constructor === ApiError && err.name === 'ApiError') {
         res.status(err.responseCode).send(err.toResponseData())
     } else {
-        res.status(500).send(ResponseData.fromError(err))
+        res.status(500).send(ResponseData.get("unknown", "", undefined, err.message))
         console.log(err)
     }
 })
+
 const server = http.createServer(app);
 
 server.listen(process.env.PORT || 8080, () => {

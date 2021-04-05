@@ -1,9 +1,6 @@
-type ResponseCode<T> = {
-    [k in keyof T]: string
-}
-function MakeCodes<T = unknown>(code: T) {
-    let x: any = code;
-    return x as ResponseCode<T> & { [Key: string]: string }
+function MakeCodes(code) {
+    let x = code;
+    return x;
 }
 export const Codes = MakeCodes({
     "0000": "Success",
@@ -14,4 +11,4 @@ export const Codes = MakeCodes({
     "invalid-jwt": "JWT token is not valid",
     "user-not-found": "User Not Found",
     "forbidden": "Access Forbidden" */
-})
+});
