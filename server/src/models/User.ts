@@ -1,14 +1,14 @@
 import { Document, Schema, model } from 'mongoose';
 
 export interface UserIntf extends Document{
-    name: string,
-    phoneNumber: string,
+    name?: string,
+    phoneNumber?: string,
     email: string,
     passwordHashed: string,
     passwordSalt: string,
-    address: {
+    address?: {
         line1: string,
-        line2: string,
+        line2?: string,
         pincode: string,
         city: string,
         state: string,
@@ -22,8 +22,8 @@ export interface UserIntf extends Document{
 }
 
 export const UserSchema = new Schema<UserIntf>({
-    name: {type: String, required: [true, "Name is required"]},
-    phoneNumber: {type: String, required: [true, "Phone number is required"]},
+    name: {type: String},
+    phoneNumber: {type: String},
     email: {type: String, required: [true, "email is required"]},
     passwordHashed: {type: String, required: [true, "Password is required"]},
     passwordSalt: {type: String, required: true},
@@ -31,7 +31,7 @@ export const UserSchema = new Schema<UserIntf>({
         type:
         {
             line1: {type: String, required: [true, "Line1 is required"]},
-            line2: {type: String, required: [true, "Line2 is required"]},
+            line2: {type: String},
             pincode: {type: String, required: [true, "Pincode is required"]},
             city: {type: String, required: [true, "City is required"]},
             state: {type: String, required: [true, "State is required"]},
@@ -42,9 +42,9 @@ export const UserSchema = new Schema<UserIntf>({
                     coordinates: { type: [Number], required: true}
                 }
             },
-        }
+        }, required: false
     },
-    profilePicUrl: {type: String, required: false},
+    profilePicUrl: {type: String},
 });
 
 export const UserModel = model('user', UserSchema)

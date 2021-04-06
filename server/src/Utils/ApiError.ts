@@ -1,16 +1,19 @@
 import ResponseData  from "./ResponseData"
+import { Codes } from "./ResultCodes"
 
-export default class ApiError extends Error {
+export default class ApiError{
+    message?: string
     resultCode: string
     responseCode: number = 400
+    name: string
 
     constructor(resultCode: string, responseCode: number = 400, message?: string) {
-        super(message)
+        this.message = message
         this.resultCode = resultCode
         this.responseCode = responseCode
         this.name = 'ApiError'
     }
     toResponseData() { 
-        return ResponseData.get(this.resultCode, this.resultCode, undefined, this.message);
+        return ResponseData.get(this.resultCode, Codes[this.resultCode], undefined, this.message);
     }
 }

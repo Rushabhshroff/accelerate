@@ -17,8 +17,7 @@ app.use(cors());
 app.use(BodyParser);
 app.use(Routes);
 app.use((err: Error | ApiError, req: Request, res: Response, next: NextFunction) => {
-        
-    if (err.constructor === ApiError && err.name === 'ApiError') { 
+    if (err.constructor === ApiError && err.name === 'ApiError') {
         res.status(err.responseCode).send(err.toResponseData())
     } else {
         res.status(500).send(ResponseData.get("unknown", "", undefined, err.message))
