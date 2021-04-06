@@ -1,11 +1,13 @@
 import { Document, Schema, model } from 'mongoose';
+const bcrypt = require('bcrypt')
 
 export interface UserIntf extends Document{
     name?: string,
     phoneNumber?: string,
     email: string,
+    gender?: string,
     passwordHashed: string,
-    passwordSalt: string,
+    passwordSalt: string, 
     address?: {
         line1: string,
         line2?: string,
@@ -24,9 +26,10 @@ export interface UserIntf extends Document{
 export const UserSchema = new Schema<UserIntf>({
     name: {type: String},
     phoneNumber: {type: String},
+    gender: {type: String, enum: ["Male", "Female", "Other"]},
     email: {type: String, required: [true, "email is required"]},
     passwordHashed: {type: String, required: [true, "Password is required"]},
-    passwordSalt: {type: String, required: true},
+    passwordSalt: {type: String},
     address: {
         type:
         {
@@ -47,4 +50,27 @@ export const UserSchema = new Schema<UserIntf>({
     profilePicUrl: {type: String},
 });
 
-export const UserModel = model('user', UserSchema)
+UserSchema.pre('save', function(next){
+    var user = this;
+    const SALT_WORK_FACTOR = 10;    
+
+    if (!user.isModified('passwordHashed')) return next();
+    
+    bcrypt.genSalt(SALT_WORK_FACTOR, function(err: any, salt: any) {        
+        if (err) 
+        {
+            console.log(err)
+            return next(err);
+        }
+        
+        bcrypt.hash(user.passwordHashed, salt, function(err: any, hash: any) {
+            if (err) return next(err);
+
+            user.passwordHashed = hash;
+            user.passwordSalt = salt;
+            next();
+        })
+    })
+})
+
+export const UserModel = model('user', UserSchema);

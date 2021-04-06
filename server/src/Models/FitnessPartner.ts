@@ -4,6 +4,7 @@ export interface FitnessPartnerIntf extends Document{
     name: string,
     phoneNumber: string,
     email: string,
+    gender?: string,
     passwordHashed: string,
     passwordSalt: string,
     address: {
@@ -29,6 +30,7 @@ export interface FitnessPartnerIntf extends Document{
 export const FitnessPartnerSchema = new Schema<FitnessPartnerIntf>({
     name: {type: String, required: [true, "Name is required"]},
     phoneNumber: {type: String, required: [true, "Phone number is required"]},
+    gender: {type: String, enum: ["Male", "Female", "Other"]},
     email: {type: String, required: [true, "email is required"]},
     passwordHashed: {type: String, required: [true, "Password is required"]},
     passwordSalt: {type: String, required: true},
