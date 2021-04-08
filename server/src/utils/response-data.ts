@@ -1,19 +1,19 @@
-import { Codes } from "./ResultCodes";
+import { Codes } from "./result-codes";
 
-interface ResponseDataIntf {
+export interface IResponseData {
     resultCode: string
     message?: string
     data?: any
     error?: string
 }
 
-export default class ResponseData {
+export  class ResponseData {
     resultCode: string
     message?: string
     data?: any = undefined
-    error?: any = undefined
+    error?: string = undefined
     
-    constructor(response: ResponseDataIntf) {
+    constructor(response: IResponseData) {
         this.resultCode = response.resultCode;
         this.message = response.message;
         this.data = response.data;

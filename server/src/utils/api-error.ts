@@ -1,5 +1,5 @@
-import ResponseData  from "./ResponseData"
-import { Codes } from "./ResultCodes"
+import {ResponseData}  from "./response-data"
+import { Codes } from "./result-codes"
 
 export default class ApiError{
     message?: string

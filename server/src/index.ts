@@ -1,17 +1,18 @@
 import express, { NextFunction, Request, Response } from 'express'
 import mongoose from 'mongoose'
 import cors from 'cors'
-import ApiError from "./Utils/ApiError"
-import ResponseData from "./Utils/ResponseData"
-import BodyParser from './Middlewares/BodyParser'
-import Routes from './Routes'
+import ApiError from "./utils/api-error"
+import { ResponseData } from "./utils/response-data"
+import { BodyParser } from './middlewares'
+import {Routes} from './routes'
 import http from 'http';
 
 const app = express()
 
 mongoose.connect("mongodb+srv://admin:U6PXNTcCMvuWJQUH@cluster0.jkbm8.mongodb.net/accelerate?retryWrites=true&w=majority", {
     useNewUrlParser: true,
-    useUnifiedTopology: true })
+    useUnifiedTopology: true
+})
 
 app.use(cors());
 app.use(BodyParser);

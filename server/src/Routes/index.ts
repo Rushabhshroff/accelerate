@@ -1,10 +1,12 @@
 import { Router } from 'express';
-import FitnessRoutes from './FitnessPartners';
-import UserRoutes from './User';
+import {FitnessRoutes} from './fitness-partners';
+import {UserRoutes} from './user';
 
-const Routes = Router()
+export const Routes = Router()
 
 Routes.use('/user', UserRoutes);
 Routes.use('/partners', FitnessRoutes);
 
-export default Routes;
+
+export * from './fitness-partners'
+export * from './user'
