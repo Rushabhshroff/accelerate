@@ -1,0 +1,47 @@
+[
+    {
+        "feature": "Full Access",
+        "free": "No",
+        "plus": "Yes"
+    },
+    {
+        "feature": "Ads",
+        "free": "Yes",
+        "plus": "No"
+    },
+    {
+        "feature": "History",
+        "free": "3 months",
+        "plus": "Unlimited"
+    },
+    {
+        "feature": "Routines",
+        "free": "5",
+        "plus": "Unlimited"
+    },
+    {
+        "feature": "Premade Routines",
+        "free": "All",
+        "plus": "All"
+    },
+    {
+        "feature": "Custom Exercises",
+        "free": "10",
+        "plus": "Unlimited"
+    },
+    {
+        "feature": "Body Measurements",
+        "free": "All",
+        "plus": "All"
+    },
+    {
+        "feature": "Cloud Sync & Backup",
+        "free": "No",
+        "plus": "Yes"
+    },
+    {
+        "feature": "Customize Colors",
+        "free": "No",
+        "plus": "Yes"
+    }
+]

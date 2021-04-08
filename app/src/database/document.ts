@@ -1,1 +1,1 @@
-export type Document<T> = Pick<T, keyof T> & { _id: string, _rev: string }
+export type Document =  { _id?: string, _rev?: string }

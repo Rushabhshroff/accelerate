@@ -3,9 +3,9 @@
   "name": "My Ionic App",
   "icons": [
     {
-      "src": "assets/icon/favicon.png",
-      "sizes": "64x64 32x32 24x24 16x16",
-      "type": "image/x-icon"
+      "src": "assets/icon/ic_white.png",
+      "type": "image/png",
+      "sizes": "512x512"
     },
     {
       "src": "assets/icon/icon.png",
@@ -17,5 +17,5 @@
   "start_url": ".",
   "display": "standalone",
   "theme_color": "#ffffff",
-  "background_color": "#ffffff"
+  "background_color": "#FC5350"
 }

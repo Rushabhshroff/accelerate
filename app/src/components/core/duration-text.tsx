@@ -1,10 +1,10 @@
 import { IonText } from "@ionic/react"
 import { useEffect, useState } from "react"
-import { Workout } from "../../database"
+import { IWorkout, Workout } from "../../database"
 import { Duration } from "../../utils"
 
 export interface DurationText {
-    workout: Workout
+    workout:IWorkout
     liveMode?: boolean
 }
 export function DurationText(props: DurationText) {
@@ -32,6 +32,6 @@ export function DurationText(props: DurationText) {
         }
     }, [workout])
     return (
-        <IonText className='block-text small'>{duration.toString()}</IonText>
+        <IonText className='block-text x-small'>{duration.toString()}</IonText>
     )
 }

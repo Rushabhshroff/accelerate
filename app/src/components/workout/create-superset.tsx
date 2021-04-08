@@ -1,20 +1,20 @@
 import { IonButton, IonButtons, IonContent, IonFab, IonFabButton, IonIcon, IonPage, IonTitle } from '@ionic/react'
 import { checkmark, link } from 'ionicons/icons'
 import React, { CSSProperties, useState } from 'react'
-import { Exercise } from '../../database/models'
+import { Exercise, IExercise } from '../../database/models'
 import { ExerciseData, ExerciseInfo } from '../../database/models/exercise-data'
 import { SupersetPallete } from '../../utils/superset-pallete'
 import { Header } from '../core'
 import { ExerciseListItem } from '../exercise/exercise-list-item'
 
 export interface CreateSuperset {
-    exercises: Exercise[]
-    OnDone?: (exercises: Exercise[]) => void
+    exercises: IExercise[]
+    OnDone?: (exercises: IExercise[]) => void
     OnDismiss?: () => void
 }
 export const CreateSuperset: React.FC<CreateSuperset> = (props) => {
     const [selectedExercises, SetSelectedExercises] = useState<string[]>([])
-    const [exercises, SetExercises] = useState<Exercise[]>(props.exercises)
+    const [exercises, SetExercises] = useState<IExercise[]>(props.exercises)
     const exerciseInfo = exercises.map((e) => ExerciseData.find(e.exerciseId) as ExerciseInfo);
     const OnCheckbox = (id:string, checked: boolean) => {
         if (checked) {
@@ -69,7 +69,7 @@ export const CreateSuperset: React.FC<CreateSuperset> = (props) => {
                     const checked = selectedExercises.some(j => j == exercises[i]._id)
                     const superset = exercises[i].superset
                     return (
-                        <ExerciseListItem key={i} onCheckboxValueChange={(c) => OnCheckbox(exercises[i]._id, c)} checked={checked} selectionMode={superset === undefined} exercise={ex}>
+                        <ExerciseListItem key={i} onCheckboxValueChange={(c) => OnCheckbox(exercises[i]._id || '', c)} checked={checked} selectionMode={superset === undefined} exercise={ex}>
                             { superset? <SupersetBadge backgroundColor={exercises[i].superset} /> : null}
                         </ExerciseListItem>
                     )

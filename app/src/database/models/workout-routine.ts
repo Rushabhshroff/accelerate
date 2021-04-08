@@ -1,7 +1,8 @@
 import { IExercise } from "..";
+import { Document } from "../document";
 import model from "../model";
 
-export interface IWorkoutRoutine {
+export interface IWorkoutRoutine extends Document {
     name: string,
     exercises: IExercise[]
 }

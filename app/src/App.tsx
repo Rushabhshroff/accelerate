@@ -24,34 +24,48 @@ import './theme/variables.css';
 import './theme/fonts.css'
 import './theme/main.scss'
 import { useEffect } from 'react';
-import { SetStatusBarStyle, WorkoutController } from './utils';
+import { AppSettings, SetStatusBarStyle, Unit, WorkoutController } from './utils';
 import { CSS } from './utils/css';
 import { StatusBarStyle } from '@capacitor/core';
-import firebase from 'firebase/app'
-import firebaseConfig from './configs/firebase.config.json'
-import { Timer } from './components/core/Timer';
-import Duration from './utils/duration';
-import { ExerciseList } from './components';
-import { WorkoutDetailsPage } from './pages/workout/workout-details';
-import { WorkoutRoutinesPage } from './pages/workout/workout-routine';
+import { ExerciseList, RegisterPage, LoginPage, ForgotPasswordPage, Settings, CreateExercise, WorkoutPreferences } from './components';
+import { WorkoutDetailsPage, WorkoutRoutinesPage } from './pages';
+
 import { ExerciseData, init_database } from './database';
-if (firebase.apps.length <= 0) {
-  firebase.initializeApp(firebaseConfig)
-}
+import { SubscriptionCompare } from './components/subscription';
+import { ManageSubscriptionPage } from './components/subscription/subscription-manage';
+import { UnitsPreferences } from './components/settings/units-preferences';
+import { ThemePreferences } from './components/settings/theme-preferences';
+import { AppTheme } from './utils/app-theme';
+import { ExportData } from './components/settings/export-data';
+import { BodyMeasuresPage } from './pages/body-measures';
 const App: React.FC = () => {
   useEffect(() => {
     InitializeApp()
-    SetStatusBarStyle({ backgroundColor: CSS.variable('--ion-color-background') || '#ffffff', barStyle: StatusBarStyle.Dark })
   }, [])
+  useEffect(() => {
+    SetStatusBarStyle({ backgroundColor: CSS.variable('--ion-background-color') || '#ffffff', barStyle: StatusBarStyle.Dark })
+  }, [AppSettings.current.theme.mode])
   return (
     <IonApp>
       <IonReactRouter>
         <IonRouterOutlet animated={true}>
+          <Route exact path='/login' render={(props) => <LoginPage />} />
+          <Route exact path='/register' render={(props) => <RegisterPage />} />
+          <Route exact path='/forgot-password' render={(props) => <ForgotPasswordPage />} />
           <Route path="/home" render={(props) => <Home {...props} />} />
           <Route path='/exercises' exact render={() => <ExerciseList />} />
+          <Route exact path='/settings' render={() => <Settings />} />
+          <Route exact path='/settings/workout' render={() => <WorkoutPreferences />} />
+          <Route exact path='/settings/units' render={() => <UnitsPreferences />} />
+          <Route exact path='/settings/theme' render={() => <ThemePreferences />} />
+          <Route exact path='/export-data' render={() => <ExportData />} />
+          <Route exact path='/subscription' render={() => <SubscriptionCompare />} />
+          <Route exact path='/subscription/manage' render={() => <ManageSubscriptionPage />} />
           <Route exact path='/exercise/:id' render={(props) => <ExerciseDetailsPage {...props} />} />
           <Route exact path='/workout/:id' render={(props) => <WorkoutDetailsPage {...props} />} />
           <Route exact path='/routine/:id' render={(props) => <WorkoutRoutinesPage {...props} />} />
+          <Route exact path='/body-measures' render={() => <BodyMeasuresPage />} />
+          <Route exact path='/create-exercise' render={(props) => <CreateExercise />} />
           <Route exact path="/" render={(props) => <Redirect to='/home' />} />
         </IonRouterOutlet>
       </IonReactRouter>
@@ -61,7 +75,12 @@ const App: React.FC = () => {
 
 export default App;
 
-export async function InitializeApp(){
+export async function InitializeApp() {
   await init_database()
   await ExerciseData.Load()
+  await AppSettings.Load()
+  await AppTheme.Load()
 }
+
+
+

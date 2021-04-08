@@ -5,14 +5,14 @@ import React, { useEffect, useState } from 'react'
 import { RouteComponentProps } from 'react-router'
 import { EditWorkout, HorizontalCalender } from '../../../components'
 import { WorkoutHistoryList } from '../../../components/workout/workout-history-list'
-import { Exercise, Workout } from '../../../database/models'
+import { Exercise, IWorkout, Workout } from '../../../database/models'
 import { WorkoutController } from '../../../utils'
 import './styles.scss'
 
 export const WorkoutSegment: React.FC<RouteComponentProps> = (props) => {
     const [date, SetDate] = useState(moment())
     const [Alert] = useIonAlert()
-    const [workout, SetWorkout] = useState<Workout | undefined>(WorkoutController.active)
+    const [workout, SetWorkout] = useState<IWorkout | undefined>(WorkoutController.active)
     const [exercises, SetExercises] = useState<Exercise[]>(WorkoutController.exercises)
     const [OpenWorkout, CloseWorkout] = useIonModal(() => <EditWorkout liveMode={WorkoutController.active?._id === workout?._id} exercises={exercises} workout={workout} onDismiss={CloseWorkout} onDiscard={OnDiscard} />);
     useEffect(() => {

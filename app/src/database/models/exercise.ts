@@ -1,16 +1,16 @@
 import model from "../model";
 import { WorkoutSet } from "./workout-set";
-import DataSet from '../dataset.json'
 import { AppSettings } from "../../utils";
 import { ExerciseData } from "./exercise-data";
 import { Units } from "../../utils/units";
 import { Workout } from "./workout";
 import { ExerciseValues } from "./exercise-values";
 import { ExercisePropsMap } from "..";
+import { Document } from "../document";
 
 
 
-export interface IExercise {
+export interface IExercise extends Document {
     exerciseId: string,
     workoutId: string,
     exerciseName: string,
@@ -20,15 +20,17 @@ export interface IExercise {
     note?: string,
     restTime?: number,
     superset?: string,
-    units: Units,
+    units: Partial<Units>,
     timestamp?: number
 }
 
 
 export class Exercise extends model<IExercise>('exercise') {
-    constructor(ob?: IExercise) {
+    constructor(ob?: Omit<IExercise,"_id">) {
         super(ob)
-        this.sets = this.sets.map((s) => new WorkoutSet(s))
+        if (ob) {
+            this.sets = this.sets.map((s) => new WorkoutSet(s))
+        }
     }
     static from(exerciseId: string, workoutId: string) {
         let ex = ExerciseData.find(exerciseId);
@@ -42,13 +44,13 @@ export class Exercise extends model<IExercise>('exercise') {
             bodyPart: ex.bodyPart as BodyPart,
             category: ex.category as ExerciseCategory,
             sets: [new WorkoutSet()],
-            units: AppSettings.current.units
+            units: {}
         })
     }
     sum() {
         let res = ExerciseValues.default()
         this.sets.forEach((set) => {
-            let val = set.toExerciseValue(this.units)
+            let val = set.toExerciseValue()
             ExerciseValues.Add(res, val)
         })
         res.sets = this.sets.filter((s) => s.timestamp != undefined).length
@@ -57,7 +59,7 @@ export class Exercise extends model<IExercise>('exercise') {
     max() {
         let res = ExerciseValues.default()
         this.sets.forEach((set) => {
-            let val = set.toExerciseValue(this.units)
+            let val = set.toExerciseValue()
             ExerciseValues.ResolveMax(res, val)
         })
         return res;
@@ -89,9 +91,9 @@ export class Exercise extends model<IExercise>('exercise') {
         return Exercise.find({
             selector: {
                 timestamp: { $gt: true },
-                exerciseId:this.exerciseId
+                exerciseId: this.exerciseId
             },
-           sort: [{ timestamp: 'desc' }],
+            sort: [{ timestamp: 'desc' }],
             limit: 1
         }).then((res) => {
             if (res.docs.length > 0) {
@@ -111,23 +113,23 @@ export class Exercise extends model<IExercise>('exercise') {
     }
 }
 
-export type ExerciseCategory = 'barbell' | 'dumbbell' | 'machine' | 'weighted-bodyweight' | 'assisted-body' | 'reps-only' | 'cardio' | 'duration'
-export type BodyPart = 'none' | 'core' | 'arms' | 'back' | 'chest' | 'legs' | 'shoulders' | 'other' | 'olympic' | 'full-body' | 'cardio'
-export const ExerciseCategories = {
-    'barbell': 'Barbell',
-    'dumbbell': 'Dumbbell',
-    'machine': 'Machine/Other',
-    'weighted-bodyweight': 'Weighted Body Weight',
+export type ExerciseCategory = 'weight-reps' | 'weighted-bodyweight' | 'assisted-body' | 'reps-only' | 'distance-duration' | 'duration'
+export type BodyPart = 'none' | 'core' | 'biceps' | 'triceps' | 'glutes' | 'back' | 'chest' | 'legs' | 'shoulders' | 'other' | 'olympic' | 'full-body' | 'cardio'
+export const ExerciseCategories: any = {
+    'weight-reps': 'Weights & Reps',
+    'weighted-bodyweight': 'Weighted BodyWeight',
     'assisted-body': 'Assisted Body',
     'reps-only': 'Repetitons Only',
-    'cardio': 'Cardio',
+    'distance-duration': 'Distance & Duration',
     'duration': "Duration"
 }
 
-export const BodyParts = {
+export const BodyParts: any = {
     'none': 'None',
     'core': 'Core',
-    'arms': 'Arms',
+    'biceps': 'Biceps',
+    'triceps': 'Triceps',
+    'glutes': "Glutes",
     'chest': 'Chest',
     'legs': 'Legs',
     'back': "Back",
@@ -138,3 +140,13 @@ export const BodyParts = {
     'cardio': 'Cardio'
 }
 
+export const ExerciseEquipments: any = {
+    'none': 'None',
+    'barbell': 'Barbell',
+    'dumbbell': 'Dumbbell',
+    'machine': 'Machine',
+    'kettlebell': 'Kettlebell',
+    'band': 'Band',
+    'cable': 'Cable',
+    'plate': 'Plate'
+}

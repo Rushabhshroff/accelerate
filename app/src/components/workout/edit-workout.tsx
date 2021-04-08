@@ -2,7 +2,7 @@ import { IonButton, IonButtons, IonCard, IonCardHeader, IonCardTitle, IonCol, Io
 import { chevronDown, create, createOutline, } from 'ionicons/icons'
 import moment from 'moment'
 import React, { useEffect, useState } from 'react'
-import { Exercise, Workout } from '../../database/models'
+import { Exercise, IExercise, IWorkout, Workout } from '../../database/models'
 import { ExerciseValues } from '../../database/models/exercise-values'
 import { useArrayReduer, useObjectReducer } from '../../hooks'
 import { Duration, WorkoutController } from '../../utils'
@@ -20,8 +20,8 @@ export interface EditWorkout {
     templateMode?: boolean,
     onDismiss?: () => void,
     onDiscard?: () => void
-    workout?: Workout,
-    exercises?: Exercise[]
+    workout?: IWorkout,
+    exercises?: IExercise[]
 }
 
 export const EditWorkout: React.FC<EditWorkout> = (props) => {
@@ -29,12 +29,16 @@ export const EditWorkout: React.FC<EditWorkout> = (props) => {
     const templateMode = props.templateMode
     const [ShowAlert] = useIonAlert()
     const [ShowToast] = useIonToast()
-    const [workout, SetWorkout] = useObjectReducer(props.workout || new Workout({ name: "Workout", startTimestamp: Date.now() }))
-    const [exercises, SetExercises] = useArrayReduer(props.exercises || [])
+    const [workout, SetWorkout] = useObjectReducer<IWorkout>(props.workout || new Workout({ name: "Workout", startTimestamp: Date.now() }))
+    const [exercises, SetExercises] = useArrayReduer<IExercise>(props.exercises || [])
     const [summation, SetSummation] = useState<ExerciseValues>(ExerciseValues.default)
     const OnAddExercises = (exs: string[]) => {
         let add_exercises = exs.map((e) => {
-            return Exercise.from(e, workout._id)
+            if (workout._id) {
+                return Exercise.from(e, workout._id)
+            }else{
+                return new Exercise()
+            }
         })
         SetExercises([...exercises, ...add_exercises])
     }
@@ -53,21 +57,21 @@ export const EditWorkout: React.FC<EditWorkout> = (props) => {
     const RefreshSummation = () => {
         let sum = Object.assign({}, ExerciseValues.default());
         exercises.forEach((ex) => {
-            ExerciseValues.Add(sum, ex.sum());
+            ExerciseValues.Add(sum, new Exercise(ex).sum());
         })
         SetSummation(sum)
     }
     const Save = () => {
         const f = async () => {
             try {
-                await SaveWorkout(workout, exercises, liveMode, templateMode);
+                await SaveWorkout(new Workout(workout), exercises.map((e) => new Exercise(e)), liveMode, templateMode);
                 WorkoutController.reset()
                 if (props.onDismiss) props.onDismiss()
             } catch (err) {
                 ShowToast(err.message, 1000)
             }
         }
-        let valid = ValidateWorkout(exercises);
+        let valid = ValidateWorkout(exercises.map((e) => new Exercise(e)));
         if (!valid && !templateMode) {
             ShowAlert('There are invalid sets. They will be discarded if you continue.', [
                 { text: 'continue', handler: () => f() },
@@ -90,7 +94,7 @@ export const EditWorkout: React.FC<EditWorkout> = (props) => {
                     </IonButton>
                     {liveMode ? <TimerButton /> : null}
                 </IonButtons>
-                <TouchableOpcity>
+                <TouchableOpcity >
                     <IonTitle className='block-text text-center' >{workout.name} </IonTitle>
                     {!templateMode ? <IonText className='block-text text-center text-light small'>{moment(workout.startTimestamp).format('MMM ddd DD yyy hh:mm A')}</IonText> : null}
                 </TouchableOpcity>
@@ -110,7 +114,7 @@ export const EditWorkout: React.FC<EditWorkout> = (props) => {
                 <EmptyListPlaceholder hide={exercises.length > 0} />
                 {exercises.map((ex) => {
                     return (
-                        <ExerciseItem OnMutate={OnMutation} OnRequestSuperset={OnRequestSuperset} OnRequestReorder={OnRequestReorder} liveMode={liveMode} key={ex._id} exercise={ex} OnRequestRemove={() => RemoveExercise(ex._id)} />
+                        <ExerciseItem OnMutate={OnMutation} OnRequestSuperset={OnRequestSuperset} OnRequestReorder={OnRequestReorder} liveMode={liveMode} key={ex._id} exercise={ex} OnRequestRemove={() => RemoveExercise(ex._id || '')} />
                     )
                 })}
                 <section>
@@ -136,9 +140,9 @@ function EmptyListPlaceholder(props: any) {
 }
 
 interface EditWorkoutDetails {
-    workout: Workout,
+    workout: IWorkout,
     OnDismiss?: () => void
-    OnDone?: (workout: Workout) => void,
+    OnDone?: (workout: IWorkout) => void,
     templateMode?: boolean
 }
 function EditWorkoutDetails(props: EditWorkoutDetails) {

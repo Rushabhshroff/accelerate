@@ -1,0 +1,9 @@
+.auth{
+    .form-input,.form-text{
+        width: 80%;
+        min-height: 50px;
+    }
+    ion-button[type=submit]{
+        width: 80%;
+    }
+}

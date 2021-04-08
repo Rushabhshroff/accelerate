@@ -1,10 +1,11 @@
 import { IonCol, IonIcon, IonItem } from '@ionic/react'
 import { checkmark } from 'ionicons/icons'
 import React from 'react'
-import { Exercise, ExercisePropsMap } from '../../database'
+import { Exercise, ExercisePropsMap, IExercise } from '../../database'
+import { AppSettings } from '../../utils'
 
 export type ExerciseSetHead = {
-    ex: Exercise,
+    ex: IExercise,
     liveMode?: boolean
 }
 export function ExerciseSetHead(props: ExerciseSetHead) {
@@ -14,8 +15,8 @@ export function ExerciseSetHead(props: ExerciseSetHead) {
     const TitleMap: any = {
         'reps': 'reps',
         'time': 'time',
-        'weight': props.ex.units.weight,
-        'distance': props.ex.units.distance
+        'weight': props.ex.units.weight || AppSettings.current.units.weight,
+        'distance': props.ex.units.distance || AppSettings.current.units.distance
     }
 
     return (

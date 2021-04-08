@@ -3,31 +3,36 @@ import { arrowBack } from 'ionicons/icons'
 import React, { useEffect, useState } from 'react'
 import { RouteComponentProps } from 'react-router'
 import SwipeableViews from 'react-swipeable-views'
-import { ExerciseStats, ExerciseHistory, ExerciseInfo, Header } from '../../components'
-import { ExerciseData } from '../../database/models/exercise-data'
+import { ExerciseStats, ExerciseHistory, ExerciseInfo, Header } from '../../../components'
+import { ExerciseData } from '../../../database/models/exercise-data'
 
 export interface ExerciseDetailsPage extends RouteComponentProps<{ id: string }> {
 
 }
-const map: { [key: number]: string } = {
-    0: 'info',
-    1: 'stats',
-    2: 'history',
-}
-const indexMap: { [key: string]: number } = {
-    'info': 0,
-    'stats': 1,
-    'history': 2
-}
+
 export const ExerciseDetailsPage: React.FC<ExerciseDetailsPage> = (props) => {
     const router = useIonRouter();
     const { id } = props.match.params
-    const screen = new URL(window.location.href).searchParams.get('screen')
     let exerciseInfo = ExerciseData.find(id)
-    const [tabindex, SetTabindex] = useState(indexMap[screen || ''] || 0);
+    const info = exerciseInfo && exerciseInfo.instructions?.length > 0 || exerciseInfo?.mediaType !== ''
+    const [tabindex, SetTabindex] = useState(0);
+    var Views: any[] = []
+    var Tabs: string[] = []
     if (!exerciseInfo) {
         router.goBack()
         return null;
+    }
+    if (exerciseInfo) {
+        Views = [<ExerciseStats key='stats' exercise={exerciseInfo} />,
+        <ExerciseHistory key='history' exercise={exerciseInfo} />]
+        Tabs = [
+            'Statestics',
+            'History'
+        ]
+        if (info) {
+            Views.unshift(<ExerciseInfo key='info' exercise={exerciseInfo} />)
+            Tabs.unshift('Info')
+        }
     }
     return (
         <IonPage >
@@ -40,17 +45,17 @@ export const ExerciseDetailsPage: React.FC<ExerciseDetailsPage> = (props) => {
                     </IonButtons>
                     <IonTitle>{exerciseInfo.exerciseName}</IonTitle>
                 </IonToolbar>
-                <IonSegment onIonChange={e => SetTabindex(indexMap[e.detail.value as string])} value={map[tabindex]} >
-                    <IonSegmentButton value='info'>Info</IonSegmentButton>
-                    <IonSegmentButton value='stats'>Statestics</IonSegmentButton>
-                    <IonSegmentButton value='history'>History</IonSegmentButton>
+                <IonSegment onIonChange={e => SetTabindex(Number(e.detail.value))} value={tabindex.toString()} >
+                    {Tabs.map((text, index) => {
+                        return (
+                            <IonSegmentButton key={index} value={index.toString()}>{text}</IonSegmentButton>
+                        )
+                    })}
                 </IonSegment>
             </Header>
 
             <SwipeableViews style={{ height: '100%', width: '100%' }} index={tabindex} onChangeIndex={i => SetTabindex(i)} >
-                <ExerciseInfo exercise={exerciseInfo} />
-                <ExerciseStats exercise={exerciseInfo} />
-                <ExerciseHistory exercise={exerciseInfo} />
+                {Views}
             </SwipeableViews>
         </IonPage>
     )

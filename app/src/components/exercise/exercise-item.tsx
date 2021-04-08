@@ -1,7 +1,7 @@
 import { IonButton, IonButtons, IonCol, IonIcon, IonItem, IonRow, IonText, IonTextarea, useIonActionSheet, useIonModal, useIonPicker } from '@ionic/react'
 import { add, checkmark, close, ellipsisHorizontal, ellipsisHorizontalCircleOutline, ellipsisVertical, gitCompareOutline, remove, repeatOutline, timerOutline } from 'ionicons/icons'
 import React, { useEffect, useState } from 'react'
-import { Exercise, WorkoutSet } from '../../database/models'
+import { Exercise, IExercise, WorkoutSet } from '../../database/models'
 import { ExerciseData } from '../../database/models/exercise-data'
 import { ExercisePropsMap } from '../../database/models/exercise-props-map'
 import { useObjectReducer } from '../../hooks'
@@ -13,7 +13,7 @@ import { ExerciseSetHead } from './exercise-set-head'
 import { ExerciseThumbnail } from './exercise-thumbnail'
 import './styles.scss'
 interface ExerciseItem {
-    exercise: Exercise,
+    exercise: IExercise,
     OnRequestRemove?: () => void,
     liveMode?: boolean
     OnRequestReorder?: () => void,
@@ -127,12 +127,17 @@ export const ExerciseItem: React.FC<ExerciseItem> = (props) => {
         SetExercise({})
     }
     useEffect(() => {
-        exercise.previous().then((res) => {
-            console.log(res)
+        new Exercise(exercise).previous().then((res) => {
+
             SetPrevExercise(res)
         })
     }, [])
-    var setCount = 0;
+    var counts = {
+        'warmup': 0,
+        'normal': 0,
+        'drop': 0,
+        'failure': 0
+    }
     return (
         <div className='exercise-item py-3'>
             <div className='px-3'>
@@ -152,14 +157,13 @@ export const ExerciseItem: React.FC<ExerciseItem> = (props) => {
             </div>
             <ExerciseSetHead liveMode={liveMode} ex={exercise} />
             {exercise.sets.map((set) => {
-                if (set.setType !== 'warmup') {
-                    setCount += 1
-                }
+                counts[set.setType]++;
                 return (
                     <ExerciseSet
+                        prevExercise={prevExercise}
                         OnMutate={OnSetMutated}
                         liveMode={liveMode}
-                        index={setCount}
+                        index={counts[set.setType]}
                         key={set._id} OnRequestRemove={() => RemoveSet(set._id)}
                         set={set}
                         exercise={exercise} />

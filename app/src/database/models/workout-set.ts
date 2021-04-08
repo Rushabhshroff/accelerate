@@ -1,15 +1,15 @@
 import { v1 } from 'uuid'
-import { ActiveExerciseProps } from '..';
-import { AppSettings, Duration, Units } from '../../utils';
+import { ActiveExerciseProps, ExerciseCategory } from '..';
+import { AppSettings, Duration, Unit, Units } from '../../utils';
 import { oneRM } from '../../utils/body-calculators';
 import { ExerciseValues } from './exercise-values';
 export interface WorkoutSet {
     _id: string,
     setType: 'normal' | 'drop' | 'failure' | 'warmup',
-    reps?: number,
+    reps?: Unit,
     time?: string,
-    distance?: number,
-    weight?: number,
+    distance?: Unit,
+    weight?: Unit,
     timestamp?: number,
     [key: string]: any
 }
@@ -17,34 +17,37 @@ export interface WorkoutSet {
 export class WorkoutSet implements WorkoutSet {
     _id: string;
     setType: "normal" | "drop" | "failure" | "warmup" = 'normal';
-    reps?: number | undefined;
+    reps?: Unit | undefined;
     time?: string | undefined;
-    distance?: number | undefined;
-    weight?: number | undefined;
+    distance?: Unit | undefined;
+    weight?: Unit | undefined;
     timestamp?: number | undefined;
     constructor(ob?: WorkoutSet) {
         this._id = v1()
         if (ob) {
             Object.assign(this, ob)
+            this.weight = this.weight ? new Unit(this.weight) : undefined;
+            this.distance = this.distance ? new Unit(this.distance) : undefined;
+            this.reps = this.reps ? new Unit(this.reps) : undefined;
         }
     }
     get done() {
         return this.timestamp != undefined
     }
-    toExerciseValue(currentUnits: Units) {
+    toExerciseValue() {
         return {
             reps: this.reps || 0,
             time: this.time ? Duration.fromHHMMSS(this.time).milliseconds() : 0,
-            distance: this.distance ? Units.convert(currentUnits.distance, AppSettings.current.units.distance, this.distance) : 0,
-            weight: this.weight ? Units.convert(currentUnits.weight, AppSettings.current.units.weight, this.weight) : 0,
-            volume: this.volume(currentUnits)
+            distance: this.distance?.current?.value || 0,
+            weight: this.weight?.current?.value || 0,
+            volume: this.volume()
         } as ExerciseValues
     }
-    volume(currentUnits: Units) {
-        return (this.weight ? Units.convert(currentUnits.weight, AppSettings.current.units.weight, this.weight) : 0) * (this.reps || 0)
+    volume() {
+        return (this.weight?.current?.value || 0) * (this.reps?.value || 0)
     }
     oneRM() {
-        return oneRM(this.weight || 0, this.reps || 0)
+        return oneRM(this.weight?.value || 0, this.reps?.value || 0)
     }
     validate(props: ActiveExerciseProps) {
         for (let key in props) {
@@ -53,5 +56,19 @@ export class WorkoutSet implements WorkoutSet {
             }
         }
         return true;
+    }
+    toString(category: ExerciseCategory) {
+        switch (category) {
+            case 'assisted-body':
+            case 'weight-reps':
+            case 'weighted-bodyweight':
+                return `${this.weight?.toString()} x ${this.reps?.value}`
+            case 'reps-only':
+                return `${this.reps}`
+            case 'distance-duration':
+                return `${this.distance?.toString()} | ${this.time}`
+            case 'duration':
+                return `${this.time}`
+        }
     }
 }
