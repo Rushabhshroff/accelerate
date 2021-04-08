@@ -1,3 +1,5 @@
+import { ChartDuration } from "../components/charts";
+
 const millisecond = 1,
     second = 1000 * millisecond,
     minute = 60 * second,
@@ -167,7 +169,7 @@ export class Duration {
         let minutes = Math.floor(milliseconds / minute);
         if (minutes !== 0) {
             milliseconds -= minute * minutes;
-            str += " " +  minutes.toString() + "m";
+            str += " " + minutes.toString() + "m";
         }
 
         // seconds
@@ -287,6 +289,19 @@ export class Duration {
             arr.push(new Duration(i * 1000))
         }
         return arr;
+    }
+    static toStartDate(duration: ChartDuration) {
+        let now = new Date(new Date().setHours(0, 0, 0, 0));
+        switch (duration) {
+            case '3m':
+                return now.setMonth(now.getMonth() - 3)
+            case '6m':
+                return now.setMonth(now.getMonth() - 6)
+            case '1y':
+                return now.setMonth(now.getMonth() - 12)
+            case 'L':
+                return now.setTime(0)
+        }
     }
 }
 

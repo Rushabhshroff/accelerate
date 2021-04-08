@@ -1,3 +1,3 @@
 export * from './home'
 export * from './workout'
-export * from './exercise'
+export * from './workout/exercise'

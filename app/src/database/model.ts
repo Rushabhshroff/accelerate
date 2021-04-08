@@ -1,6 +1,7 @@
 import { connection as Database } from "./connection"
 import { v1 } from 'uuid'
-function model<T = any, X = unknown>(type: string) {
+import { Document } from "./document"
+function model<T extends Document = any, X = unknown>(type: string) {
     interface IModel {
         new(obj?: T, forceId?: boolean): Model & T
         find(request: PouchDB.Find.FindRequest<T>): Promise<PouchDB.Find.FindResponse<T>>,

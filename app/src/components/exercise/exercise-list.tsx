@@ -1,4 +1,4 @@
-import { IonButton, IonButtons, IonCheckbox, IonContent, IonIcon, IonItem, IonPage, IonSearchbar, IonText, IonTitle, useIonRouter } from '@ionic/react'
+import { IonButton, IonButtons, IonCheckbox, IonContent, IonIcon, IonItem, IonPage, IonSearchbar, IonText, IonTitle, useIonModal, useIonRouter } from '@ionic/react'
 import { arrowBack, checkmark, filter } from 'ionicons/icons'
 import React, { useEffect, useState } from 'react'
 import { Header, TouchableOpcity } from '../core'
@@ -6,9 +6,9 @@ import { PopoverButton, PopoverItem } from '../core/Popover/popover-button'
 import { List } from 'react-virtualized';
 import './styles.scss'
 import { useDimension } from '../../hooks'
-import { DataSet } from '../../database'
 import { ExerciseListItem } from './exercise-list-item'
-import { ExerciseInfo } from '../../database/models/exercise-data'
+import { ExerciseData, ExerciseInfo } from '../../database/models/exercise-data'
+import { ExerciseFilter } from './exercise-filter'
 interface ExerciseListProps {
     onDismiss?: () => void,
     selectionMode?: boolean,
@@ -17,16 +17,13 @@ interface ExerciseListProps {
 }
 export const ExerciseList: React.FC<ExerciseListProps> = (props) => {
     const router = useIonRouter()
-    const [exercises, SetExercises] = useState(DataSet)
+    const [exercises, SetExercises] = useState(ExerciseData.dataset)
     const [selectedExercises, SetSelectedExercises] = useState<string[]>([])
+    const [bodyparts, SetBodyparts] = useState<string[]>([])
+    const [equipments, SetEquipments] = useState<string[]>([])
+    const [search,SetSearch] = useState('')
     const { width, height } = useDimension()
-    const OnSearch = (query: string) => {
-        if (query.trim() == "") {
-            SetExercises(DataSet)
-        } else {
-            SetExercises(DataSet.filter(x => x.exerciseName.toLowerCase().includes(query.toLowerCase())))
-        }
-    }
+    const [ShowFilterModal, HideFilterModal] = useIonModal(() => <ExerciseFilter bodyparts={bodyparts} equipments={equipments} onDismiss={OnDismissFilter} />)
     const OnSelect = (checked: boolean, exId: string) => {
 
         if (checked) {
@@ -49,6 +46,26 @@ export const ExerciseList: React.FC<ExerciseListProps> = (props) => {
             router.goBack()
         }
     }
+    const OnDismissFilter = (data: { bodyparts: string[], equipments: string[] }) => {
+        HideFilterModal()
+        SetBodyparts(data.bodyparts)
+        SetEquipments(data.equipments)
+    }
+    useEffect(() => {
+        let exs = [...ExerciseData.dataset]
+        if (bodyparts.length > 0 || equipments.length > 0 || search.length > 0) {
+            if (bodyparts.length > 0) {
+                exs = exs.filter((e) => bodyparts.includes(e.bodyPart))
+            }
+            if (equipments.length > 0) {
+                exs = exs.filter((e) => equipments.includes(e.equipment))
+            }
+            if(search.length > 0){
+                exs = exs.filter((e)=>e.exerciseName.toLowerCase().includes(search.toLowerCase()))
+            }
+        }
+        SetExercises(exs)
+    }, [bodyparts, equipments,search])
     return (
         <IonPage>
             <Header>
@@ -57,26 +74,27 @@ export const ExerciseList: React.FC<ExerciseListProps> = (props) => {
                         <IonIcon icon={arrowBack} />
                     </IonButton>
                 </IonButtons>
-                <IonSearchbar onIonChange={e => OnSearch(e.detail.value || '')} placeholder='Enter Exercise Name' style={{ padding: '0 10px' }} mode='ios' />
+                <IonSearchbar value={search} onIonChange={e => SetSearch(e.detail.value || '')} placeholder='Enter Exercise Name' style={{ padding: '0 10px' }} mode='ios' />
                 <IonButtons slot='end'>
-                    <IonButton>
+                    <IonButton onClick={() => ShowFilterModal()}>
                         <IonIcon icon={filter} />
                     </IonButton>
                     <PopoverButton>
-                        <PopoverItem button >Create Exercise</PopoverItem>
+                        <PopoverItem routerLink={'/create-exercise'} button >Create Exercise</PopoverItem>
                     </PopoverButton>
                 </IonButtons>
             </Header>
             <List
+                className='virtual-list'
                 rowHeight={56}
                 rowCount={exercises.length}
                 width={width}
                 height={height - 50}
+                style={{backgroundColor:'var(--ion-background-color, #fff)'}}
+                containerStyle={{backgroundColor:'var(--ion-background-color, #fff)'}}
                 rowRenderer={({
                     key,
                     index,
-                    isScrolling,
-                    isVisible,
                     style,
                 }) => {
                     const ex = exercises[index]

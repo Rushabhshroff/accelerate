@@ -3,6 +3,10 @@
     font-family: "Coda", sans-serif;
     scroll-behavior: smooth;
 }
+a {
+    color: var(--ion-color-primary);
+    text-decoration: none;
+}
 button {
     padding: 0;
 }
@@ -84,7 +88,7 @@ ion-fab {
 .text-transform-up {
     text-transform: uppercase !important;
 }
-ion-text {
+* {
     &.x-small {
         font-size: 12px !important;
     }
@@ -167,4 +171,8 @@ ion-text {
 }
 .border-top {
     border-top: solid 1px var(--ion-color-medium);
+}
+
+.virtual-list {
+    background-color: var(--background, var(--ion-background-color), #000);
 }

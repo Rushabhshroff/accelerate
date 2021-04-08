@@ -6,19 +6,17 @@ export const TouchableOpcity: React.FC<Pick<React.HTMLAttributes<HTMLIonRouterLi
     const toggleTouched = () => {
         SetTouched(!touched)
     }
-
-    const handleMouseUp = () => {
-        // Handle smooth animation when clicking without holding
-       
+    useEffect(() => {
+        if (touched) {
             setTimeout(() => {
                 SetTouched(false)
             }, 50);
-    }
+        }
+    }, [touched])
     return (
         <IonRouterLink
             {...props}
             onMouseDown={toggleTouched}
-            onMouseUp={handleMouseUp}
             style={{
                 opacity: touched ? props.activeOpacity || 0.5 : 1,
                 ...props.style

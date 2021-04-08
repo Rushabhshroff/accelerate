@@ -1,27 +1,29 @@
 import { IonButton, IonButtons, IonCol, IonIcon, IonInput, IonItem, IonItemOption, IonItemOptions, IonItemSliding, IonRow, IonText, useIonPopover } from '@ionic/react'
-import { checkmark, help, trashBin } from 'ionicons/icons'
+import { checkmark, help, key, trashBin } from 'ionicons/icons'
 import React, { useEffect, useState } from 'react'
-import { Exercise, WorkoutSet } from '../../database/models'
+import { Exercise, IExercise, WorkoutSet } from '../../database/models'
 import { ExercisePropsMap } from '../../database/models/exercise-props-map'
 import { useObjectReducer } from '../../hooks'
 import { useRestTimer } from '../../hooks/useRestTimer'
-import { StringUtils } from '../../utils'
+import { AppSettings, Duration, StringUtils, Unit } from '../../utils'
 import { TouchableOpcity } from '../core'
 import './styles.scss'
 export interface ExerciseSet {
     OnRequestRemove?: () => void,
     OnMutate?: () => void,
     set: WorkoutSet,
-    exercise: Exercise
-    index?: number,
+    exercise: IExercise,
+    prevExercise?: Exercise
+    index: number,
     liveMode?: boolean,
     disabled?: boolean
 }
 export const ExerciseSet: React.FC<ExerciseSet> = (props) => {
     const ShowTimer = useRestTimer();
+    const exercise = props.exercise
+    const prevEx = props.prevExercise
     const [set, UpdateSet] = useObjectReducer(props.set)
-    
-    const inputs = Object.keys(ExercisePropsMap[props.exercise.category]);
+    const inputs = ExercisePropsMap[props.exercise.category];
     const [ShowSelectSetType, HideSelectSetType] = useIonPopover(<SetTypeOptions OnSelectOption={(op) => {
         UpdateSet({
             //@ts-ignore
@@ -30,25 +32,48 @@ export const ExerciseSet: React.FC<ExerciseSet> = (props) => {
         HideSelectSetType()
     }} />);
     const liveMode = props.liveMode || false
-    const SetDone = () => {
-        UpdateSet({
-            timestamp: Date.now()
-        })
+    const getPreviousSet = () => {
+        if (prevEx && prevEx.sets.filter((s) => s.setType === set.setType).length >= props.index) {
+            return { isPrev: true, set: prevEx.sets.filter((s) => s.setType === set.setType)[props.index - 1] }
+        } else if (props.index > 1 && exercise.sets.filter((s) => s.setType === set.setType).length >= props.index) {
+            return { isPrev: false, set: exercise.sets.filter((s) => s.setType === set.setType)[props.index - 2] }
+        } else {
+            return undefined
+        }
     }
-    const getPlaceholder = (key: string) => {
-        return defaultPlaceholders[key]
-    }
+    const prevSet = liveMode ? getPreviousSet() : undefined;
     const disabled = props.disabled
     const done = set.timestamp !== undefined && liveMode ? 'done' : '';
-    const HandleInputChange = (key: string, value?: string | null) => {
+    const HandleInputChange = (key: string, value: string) => {
         let update: any = {}
-        if (value) {
-            let ip = key === 'time' ? StringUtils.SanitizeToDurationHHMMSS(value) : key === 'reps' ? StringUtils.SanitizeToWholeNumber(value) : StringUtils.SanitizeToNumber(value)
-            update[key] = ip
-        } else {
-            update[key] = undefined
+        let unit = exercise.units[key] || AppSettings.current.units[key]
+        switch (key) {
+            case 'time':
+                update.time = value ? StringUtils.SanitizeToDurationHHMMSS(value) : undefined
+                break;
+            case 'distance':
+                update.distance = value ? Unit.parse(value + unit) : undefined
+                break;
+            case 'weight':
+                update.weight = value ? Unit.parse(value + unit) : undefined
+                break;
+            case 'reps':
+                update.reps = value ? Unit.parse(value) : undefined
+                break
         }
-        UpdateSet(update)
+        UpdateSet(update);
+    }
+    const SetSameAsPrev = () => {
+        if (prevSet && prevSet.set) {
+            let enables = ExercisePropsMap[exercise.category]
+            let updates: any = {}
+            for (let key in enables) {
+                if (prevSet) {
+                    updates[key] = prevSet.set[key]
+                }
+            }
+            UpdateSet(updates)
+        }
     }
     useEffect(() => {
         if (set.timestamp && props.exercise.restTime) {
@@ -56,22 +81,51 @@ export const ExerciseSet: React.FC<ExerciseSet> = (props) => {
         }
         if (props.OnMutate) props.OnMutate()
     }, [set.timestamp])
+    useEffect(() => {
+        if (props.OnMutate) props.OnMutate()
+    }, [set.setType, set.weight, set.distance, set.time, set.reps])
+    const SetDone = () => {
+        let enables = ExercisePropsMap[exercise.category]
+        let updates: any = {}
+        for (let key in enables) {
+            if (set[key] == undefined && prevSet) {
+                updates[key] = prevSet.set[key]
+            }
+        }
+        UpdateSet({
+            timestamp: Date.now(),
+            ...updates
+        })
+    }
     return (
         <IonItemSliding>
             <IonItem detail={false} button={false} lines='none' className={`small row-center ion-no-padding exercise-set ${set.setType} ${done}`}>
                 <IonCol size='2' className='table-item'>
                     <IonButton disabled={disabled} onClick={() => ShowSelectSetType()} color={setTypeToColor[set.setType]} mode='md' fill='clear'>
-                        {set.setType == 'warmup' ? "W" : props.index}
+                        {set.setType != 'normal' ? `${set.setType[0].toUpperCase()}-${props.index}` : props.index}
                     </IonButton>
                 </IonCol>
-                {liveMode ? <IonCol className='text-light table-item'>-</IonCol> : null}
-                {inputs.map((i) => {
-                    return (
-                        <IonCol key={i} size={liveMode?'2':'4'} className='table-item'>
-                            <IonInput disabled={disabled} onIonChange={(e) => HandleInputChange(i, e.detail.value)} value={set[i]} type={inputTypeMap[i]} placeholder={getPlaceholder(i)} />
-                        </IonCol>
-                    )
-                })}
+                {liveMode ? <IonCol onClick={SetSameAsPrev} className='text-light table-item'>{prevSet && prevSet.isPrev ? prevSet.set.toString(exercise.category) : '-'}</IonCol> : null}
+                {inputs.distance ?
+                    <IonCol size={liveMode ? '2' : '4'} className='table-item'>
+                        <IonInput disabled={disabled} onIonChange={(e) => HandleInputChange('distance', e.detail.value || '')} value={set.distance?.asOrCurrent(exercise.units['distance']).value.toFixed(1)} type={inputTypeMap.distance} placeholder={prevSet?.set.distance?.value?.toString() || defaultPlaceholders.distance} />
+                    </IonCol>
+                    : null}
+                {inputs.weight ?
+                    <IonCol size={liveMode ? '2' : '4'} className='table-item'>
+                        <IonInput disabled={disabled} onIonChange={(e) => HandleInputChange('weight', e.detail.value || '')} value={set.weight?.asOrCurrent(exercise.units['weight']).value} type={inputTypeMap.weight} placeholder={prevSet?.set.weight?.value?.toString() || defaultPlaceholders.weight} />
+                    </IonCol>
+                    : null}
+                {inputs.reps ?
+                    <IonCol size={liveMode ? '2' : '4'} className='table-item'>
+                        <IonInput disabled={disabled} onIonChange={(e) => HandleInputChange('reps', e.detail.value || '')} value={set.reps?.toString(0)} type={inputTypeMap.reps} placeholder={prevSet?.set.reps?.value?.toString() || defaultPlaceholders.reps} />
+                    </IonCol>
+                    : null}
+                {inputs.time ?
+                    <IonCol size={liveMode ? '2' : '4'} className='table-item'>
+                        <IonInput disabled={disabled} onIonChange={(e) => HandleInputChange('time', e.detail.value || '')} value={set.time} type={inputTypeMap.time} placeholder={prevSet?.set.time || defaultPlaceholders.time} />
+                    </IonCol>
+                    : null}
                 {liveMode && !disabled ? <IonCol size='2' className='table-item'>
                     <TouchableOpcity activeOpacity={1} onClick={SetDone} className='checkmark-box'>
                         <IonIcon icon={checkmark} />
@@ -106,7 +160,7 @@ const setTypeMap: any = {
     'D': 'drop',
     'F': 'failure'
 }
-const defaultPlaceholders: any = {
+const defaultPlaceholders = {
     'weight': '0',
     'time': 'mm:ss',
     'distance': '0',

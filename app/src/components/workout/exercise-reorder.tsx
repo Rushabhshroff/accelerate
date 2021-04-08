@@ -1,15 +1,15 @@
 import { IonButton, IonButtons, IonContent, IonFab, IonFabButton, IonIcon, IonPage, IonReorder, IonReorderGroup, IonTitle } from '@ionic/react'
 import { checkmark, close } from 'ionicons/icons'
 import React, { useState } from 'react'
-import { Exercise } from '../../database/models'
+import { Exercise, IExercise } from '../../database/models'
 import { ExerciseData, ExerciseInfo } from '../../database/models/exercise-data'
 import { Header } from '../core'
 import { ExerciseListItem } from '../exercise/exercise-list-item'
 
 export interface ExerciseReorder {
-    exercises: Exercise[],
+    exercises:IExercise[],
     OnDismiss?: () => void
-    OnDone?: (exercses: Exercise[]) => void
+    OnDone?: (exercses: IExercise[]) => void
 }
 export const ExerciseReorder: React.FC<ExerciseReorder> = (props) => {
     const [exercises, SetExercises] = useState(props.exercises)

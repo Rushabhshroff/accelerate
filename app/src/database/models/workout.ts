@@ -1,7 +1,8 @@
 import { Exercise } from "..";
+import { Document } from "../document";
 import model from "../model";
 
-export interface IWorkout {
+export interface IWorkout extends Document {
     name: string,
     startTimestamp: number,
     endTimestamp?: number,

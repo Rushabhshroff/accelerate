@@ -37,7 +37,7 @@ export const WorkoutHistoryListItem: React.FC<WorkoutHistoryListItem> = (props) 
                 <WorkoutStatsHeader liveMode={false} workout={workout} summation={summation()} />
                 {exercises.slice(0, 5).map((ex) => {
                     return (
-                        <IonText className='text-item'>
+                        <IonText key={ex._id} className='text-item'>
                             {ex.sets.length} x {ex.exerciseName}
                         </IonText>
                     )

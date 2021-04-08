@@ -2,7 +2,8 @@ import { BodyPart, ExerciseCategory } from "./exercise";
 import Dataset from '../dataset.json'
 import model from "../model";
 import { Exercise, WorkoutSet } from "..";
-export interface IExerciseInfo {
+import { Document } from "../document";
+export interface IExerciseInfo extends Document {
     _id: string,
     exerciseName: string,
     instructions: string[],
@@ -11,7 +12,8 @@ export interface IExerciseInfo {
     mediaType: 'image' | 'video' | '',
     thumbnail?: string,
     imageUrl?: string,
-    videoUrl?: string
+    videoUrl?: string,
+    equipment: string
 }
 
 export class ExerciseInfo extends model<IExerciseInfo>('exercise_info') {
@@ -34,10 +36,23 @@ export class ExerciseData {
     static dataset: ExerciseInfo[] = Dataset.map((i) => new ExerciseInfo(i as IExerciseInfo))
     static async Load() {
         let data = await ExerciseInfo.getAll()
-        ExerciseData.dataset.concat(data.docs.map(d => new ExerciseInfo(d)));
+        ExerciseData.dataset = ExerciseData.dataset.concat(data.docs.map(d => new ExerciseInfo(d)));
         ExerciseData.dataset = ExerciseData.dataset.sort((a, b) => a.exerciseName.localeCompare(b.exerciseName))
     }
     static find(id: string) {
         return ExerciseData.dataset.find((e) => e._id == id)
+    }
+    static async Create(exercise: any) {
+        let info = new ExerciseInfo({
+            ...exercise,
+            instructions: [],
+            mediaType: ''
+        })
+        await info.save()
+        ExerciseData._insert(info);
+    }
+    private static _insert(info: ExerciseInfo) {
+        ExerciseData.dataset.push(info);
+        ExerciseData.dataset = ExerciseData.dataset.sort((a, b) => a.exerciseName.localeCompare(b.exerciseName))
     }
 }

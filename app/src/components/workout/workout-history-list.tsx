@@ -37,7 +37,7 @@ export const WorkoutHistoryList: React.FC<WorkoutHistoryList> = (props) => {
         <IonRow>
             {workouts.map((w) => {
                 return (
-                    <WorkoutHistoryListItem workout={w} />
+                    <WorkoutHistoryListItem key={w._id} workout={w} />
                 )
             })}
         </IonRow>

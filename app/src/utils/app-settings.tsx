@@ -27,7 +27,7 @@ export interface AppSettings {
     soundEffects: boolean,
     screenAwake: boolean,
     theme: {
-        mode: 'light' | 'dark',
+        mode: 'light' | 'dark' | 'auto',
         primaryColor: string
     },
     timerSeconds: number,
@@ -37,19 +37,27 @@ export interface AppSettings {
 }
 export class AppSettings {
     static current: AppSettings = DefaultSettings
+    static saving: boolean = false;
     static Load() {
-        connection<AppSettings>().get('settings').then((doc) => {
+        return connection<AppSettings>().get('settings').then((doc) => {
             AppSettings.current = doc || DefaultSettings;
         }).catch((err) => {
             console.log(err)
         })
     }
     static save() {
+        if (AppSettings.saving) {
+            return;
+        }
+        AppSettings.saving = true;
         return connection<AppSettings>().put(AppSettings.current).then(r => {
             AppSettings.current._rev = r.rev
             return r.ok
         }).catch((err) => {
+            console.log(err)
             return false
+        }).finally(() => {
+            AppSettings.saving = false;
         });
     }
 }

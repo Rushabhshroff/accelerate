@@ -5,7 +5,7 @@ export const Sounds = {
     "delightful": "delightful.mp3",
     "melody": "melody_chime.mp3",
     "radar": "radar.mp3",
-    "short_bell": "short_bell.pm3",
+    "short_bell": "short_bell.mp3",
     "tritone": "tritone_revised.mp3",
 }
 export class Sound {

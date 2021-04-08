@@ -8,15 +8,7 @@ export type ActiveExerciseProps = {
 export const ExercisePropsMap: {
     [key: string]: ActiveExerciseProps
 } = {
-    'barbell': {
-        weight: true,
-        reps: true
-    },
-    'dumbbell': {
-        weight: true,
-        reps: true
-    },
-    'machine': {
+    'weight-reps':{
         weight: true,
         reps: true
     },
@@ -31,7 +23,7 @@ export const ExercisePropsMap: {
     'reps-only': {
         reps: true
     },
-    'cardio': {
+    'distance-duration': {
         distance: true,
         time: true
     },
@@ -41,12 +33,10 @@ export const ExercisePropsMap: {
 }
 
 export const ExerciseGraphOptions: { [key: string]: ChartType[] } = {
-    'barbell': ['max-reps', 'total-reps', '1RM', 'max-weight', 'total-weight', 'max-volume', 'total-volume'],
-    'dumbbell': ['max-reps', 'total-reps', '1RM', 'max-weight', 'total-weight', 'max-volume', 'total-volume'],
-    'machine': ['max-reps', 'total-reps', '1RM', 'max-weight', 'total-weight', 'max-volume', 'total-volume'],
+    'weight-reps': ['max-reps', 'total-reps', '1RM', 'max-weight', 'total-weight', 'max-volume', 'total-volume'],
     'weighted-bodyweight': ['max-reps', 'total-reps', '1RM', 'max-weight', 'total-weight', 'max-volume', 'total-volume'],
     'assisted-body': ['max-reps', 'total-reps', '1RM', 'max-weight', 'total-weight', 'max-volume', 'total-volume'],
     'reps-only': ['max-reps', 'total-reps'],
-    'cardio': ['max-time', 'total-time', 'max-distance', 'total-distance'],
+    'duration-reps': ['max-time', 'total-time', 'max-distance', 'total-distance'],
     'duration': ['max-time', 'total-time'],
 }
