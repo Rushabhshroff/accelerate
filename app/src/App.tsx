@@ -38,6 +38,9 @@ import { ThemePreferences } from './components/settings/theme-preferences';
 import { AppTheme } from './utils/app-theme';
 import { ExportData } from './components/settings/export-data';
 import { BodyMeasuresPage } from './pages/body-measures';
+import { Api } from './api'
+import { AuthRoute } from './components/routes/auth-route';
+import { ProtectedRoute } from './components/routes';
 const App: React.FC = () => {
   useEffect(() => {
     InitializeApp()
@@ -49,24 +52,24 @@ const App: React.FC = () => {
     <IonApp>
       <IonReactRouter>
         <IonRouterOutlet animated={true}>
-          <Route exact path='/login' render={(props) => <LoginPage />} />
-          <Route exact path='/register' render={(props) => <RegisterPage />} />
-          <Route exact path='/forgot-password' render={(props) => <ForgotPasswordPage />} />
-          <Route path="/home" render={(props) => <Home {...props} />} />
-          <Route path='/exercises' exact render={() => <ExerciseList />} />
-          <Route exact path='/settings' render={() => <Settings />} />
-          <Route exact path='/settings/workout' render={() => <WorkoutPreferences />} />
-          <Route exact path='/settings/units' render={() => <UnitsPreferences />} />
-          <Route exact path='/settings/theme' render={() => <ThemePreferences />} />
-          <Route exact path='/export-data' render={() => <ExportData />} />
-          <Route exact path='/subscription' render={() => <SubscriptionCompare />} />
-          <Route exact path='/subscription/manage' render={() => <ManageSubscriptionPage />} />
-          <Route exact path='/exercise/:id' render={(props) => <ExerciseDetailsPage {...props} />} />
-          <Route exact path='/workout/:id' render={(props) => <WorkoutDetailsPage {...props} />} />
-          <Route exact path='/routine/:id' render={(props) => <WorkoutRoutinesPage {...props} />} />
-          <Route exact path='/body-measures' render={() => <BodyMeasuresPage />} />
-          <Route exact path='/create-exercise' render={(props) => <CreateExercise />} />
-          <Route exact path="/" render={(props) => <Redirect to='/home' />} />
+          <AuthRoute exact path='/login' render={(props) => <LoginPage />} />
+          <AuthRoute exact path='/register' render={(props) => <RegisterPage />} />
+          <AuthRoute exact path='/forgot-password' render={(props) => <ForgotPasswordPage />} />
+          <ProtectedRoute path="/home" render={(props) => <Home {...props} />} />
+          <ProtectedRoute path='/exercises' exact render={() => <ExerciseList />} />
+          <ProtectedRoute exact path='/settings' render={() => <Settings />} />
+          <ProtectedRoute exact path='/settings/workout' render={() => <WorkoutPreferences />} />
+          <ProtectedRoute exact path='/settings/units' render={() => <UnitsPreferences />} />
+          <ProtectedRoute exact path='/settings/theme' render={() => <ThemePreferences />} />
+          <ProtectedRoute exact path='/export-data' render={() => <ExportData />} />
+          <ProtectedRoute exact path='/subscription' render={() => <SubscriptionCompare />} />
+          <ProtectedRoute exact path='/subscription/manage' render={() => <ManageSubscriptionPage />} />
+          <ProtectedRoute exact path='/exercise/:id' render={(props) => <ExerciseDetailsPage {...props} />} />
+          <ProtectedRoute exact path='/workout/:id' render={(props) => <WorkoutDetailsPage {...props} />} />
+          <ProtectedRoute exact path='/routine/:id' render={(props) => <WorkoutRoutinesPage {...props} />} />
+          <ProtectedRoute exact path='/body-measures' render={() => <BodyMeasuresPage />} />
+          <ProtectedRoute exact path='/create-exercise' render={(props) => <CreateExercise />} />
+          <ProtectedRoute exact path="/" render={(props) => <Redirect to='/login' />} />
         </IonRouterOutlet>
       </IonReactRouter>
     </IonApp>
@@ -80,6 +83,7 @@ export async function InitializeApp() {
   await ExerciseData.Load()
   await AppSettings.Load()
   await AppTheme.Load()
+  await Api.init('http://192.168.0.161:8080')
 }
 
 

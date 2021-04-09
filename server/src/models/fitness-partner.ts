@@ -5,7 +5,7 @@ export interface IFitnessPartner extends Document {
     phoneNumber: string,
     email: string,
     gender?: string,
-    passwordHashed: string,
+    passwordHash: string,
     passwordSalt: string,
     address: {
         line1: string,
@@ -19,7 +19,7 @@ export interface IFitnessPartner extends Document {
             coordinates: number[]
         }
     },
-    profilePicUrl: string,
+    photoUrl: string,
     verified: boolean,
     documents: {
         title: string,
@@ -32,7 +32,7 @@ export const FitnessPartnerSchema = new Schema<IFitnessPartner>({
     phoneNumber: { type: String, required: [true, "Phone number is required"], unique: true },
     gender: { type: String, enum: ["Male", "Female", "Other"] },
     email: { type: String, required: [true, "email is required"], unique: true },
-    passwordHashed: { type: String, required: [true, "Password is required"] },
+    passwordHash: { type: String, required: [true, "Password is required"] },
     passwordSalt: { type: String, required: true },
     address: {
         type:
@@ -53,6 +53,14 @@ export const FitnessPartnerSchema = new Schema<IFitnessPartner>({
         title: { type: String, required: true },
         proof: { type: String, required: true },
     }]
+}, {
+    toJSON: {
+        transform: (doc, ret, options) => {
+            delete ret.passwordHash;
+            delete ret.passwordSalt
+            return ret;
+        }
+    }
 });
 
 export const FitnessPartnerModel = model("fitnessPartner", FitnessPartnerSchema)

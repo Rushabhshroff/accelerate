@@ -1,12 +1,9 @@
 import { Router } from 'express';
-import {FitnessRoutes} from './fitness-partners';
-import {UserRoutes} from './user';
+import { AuthRoutes } from './auth';
 
 export const Routes = Router()
-
-Routes.use('/user', UserRoutes);
-Routes.use('/partners', FitnessRoutes);
-
+Routes.use('/auth',AuthRoutes)
 
 export * from './fitness-partners'
 export * from './user'
+export * from './auth'

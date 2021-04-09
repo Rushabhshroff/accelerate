@@ -8,7 +8,7 @@ import { WorkoutRoutine } from '../../../database/models/workout-routine'
 import './styles.scss'
 
 export const RoutinesSegment: React.FC<RouteComponentProps> = (props) => {
-    const {pathname} = useLocation()
+    const { pathname } = useLocation()
     const [routines, SetRoutines] = useState<WorkoutRoutine[]>([])
     useEffect(() => {
         WorkoutRoutine.getAll().then((res) => {
@@ -17,9 +17,9 @@ export const RoutinesSegment: React.FC<RouteComponentProps> = (props) => {
     }, [pathname])
     return (
         <>
-            <section>
+            {/*<section>
                 <IonButton>Browse Routines</IonButton>
-            </section>
+            </section>*/}
             <RoutinesFolder >
                 {routines.map((r) => {
                     return (

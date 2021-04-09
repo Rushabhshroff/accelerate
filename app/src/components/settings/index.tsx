@@ -4,6 +4,7 @@ import React from 'react'
 import { logo, onlyRulerOutline, plusText } from '../../icons'
 import { Header } from '../core'
 import { version } from '../../../package.json'
+import { Auth } from '../../api'
 export interface Settings {
 
 }
@@ -78,7 +79,7 @@ export const Settings: React.FC<Settings> = (props) => {
                     </IonItem>
                 </IonItemGroup>
                 <section className='all-center'>
-                    <IonButton style={{ width: '80%' }}>Logout</IonButton>
+                    <IonButton onClick={()=>Auth.SignOut()} style={{ width: '80%' }}>Logout</IonButton>
                     <IonText className='m-2'>Made with ❤ in India</IonText>
                     <IonText className='m-2'>{version}</IonText>
                 </section>

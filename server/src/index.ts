@@ -4,14 +4,15 @@ import cors from 'cors'
 import ApiError from "./utils/api-error"
 import { ResponseData } from "./utils/response-data"
 import { BodyParser } from './middlewares'
-import {Routes} from './routes'
+import { Routes } from './routes'
 import http from 'http';
 
 const app = express()
 
 mongoose.connect("mongodb+srv://admin:U6PXNTcCMvuWJQUH@cluster0.jkbm8.mongodb.net/accelerate?retryWrites=true&w=majority", {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
+    useCreateIndex: true
 })
 
 app.use(cors());

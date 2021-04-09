@@ -5,9 +5,9 @@ import { FitnessPartnerModel } from "../models/fitness-partner";
 import ApiError from '../utils/api-error';
 import { RequestFilter } from '../middlewares';
 
-export const FitnessRoutes = Router()
+export const FitnessPartnerRoutes = Router()
 
-FitnessRoutes.post('/', RequestFilter(['_id']), ErrorProtectedRoute(async (req, res) => {
+FitnessPartnerRoutes.post('/', RequestFilter(['_id']), ErrorProtectedRoute(async (req, res) => {
     try {
         await FitnessPartnerModel.create(req.body)
     } catch (err) {
