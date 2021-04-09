@@ -8,7 +8,10 @@ import { plusText, rulerOutline } from '../../../icons'
 import { Chart, ChartSeries } from '../../../components/charts'
 import { Workout } from '../../../database'
 import { Duration } from '../../../utils'
+import { Auth } from '../../../api'
+import { useUserProfile } from '../../../hooks/useUserProfile'
 export const ProfileTab: React.FC<RouteComponentProps> = (props) => {
+    const profile = useUserProfile()
     return (
         <IonPage>
             <Header>
@@ -22,11 +25,16 @@ export const ProfileTab: React.FC<RouteComponentProps> = (props) => {
                 </IonButtons>
             </Header>
             <IonContent>
-                <section className='all-center'>
-                    <IonAvatar style={{ width: 150, height: 150 }}>
+                {profile ? <IonItem lines='full'>
+                    <IonAvatar slot='start' style={{ width: 70, height: 70 }}>
                         <img src="/assets/placeholder/male.jpg" alt="" />
                     </IonAvatar>
-                </section>
+                    <div className='d-flex flex-column'>
+                        {profile.name ? <IonText>{profile.name}</IonText> : null}
+                        {profile.email ? <IonText className='text-light small'>{profile.email}</IonText> : null}
+                        {profile.gender ? <IonText className='text-light small'>{profile.gender}</IonText> : null}
+                    </div>
+                </IonItem> : null}
                 <WorkoutProgressCharts />
                 <IonItem lines='none'>
                     <IonText >Accelerate</IonText>
@@ -56,7 +64,7 @@ export const ProfileTab: React.FC<RouteComponentProps> = (props) => {
                     <IonText>Convertors</IonText>
     </IonItem>*/}
                 <section className='all-center'>
-                    <IonButton style={{ width: '80%' }}>Logout</IonButton>
+                    <IonButton onClick={() => Auth.SignOut()} style={{ width: '80%' }}>Logout</IonButton>
                     <IonText className='m-2'>Made with ❤ in India</IonText>
                     <IonText className='m-2'>{version}</IonText>
                 </section>
@@ -68,7 +76,7 @@ export const ProfileTab: React.FC<RouteComponentProps> = (props) => {
 function WorkoutProgressCharts() {
     const [workouts, SetWorkout] = useState<Workout[]>([])
     const [series, SetSeries] = useState<ChartSeries>([])
-    const {pathname} = useLocation()
+    const { pathname } = useLocation()
     useEffect(() => {
         Workout.getAll().then((w) => {
             let ws = w.docs.map((d) => new Workout(d))
@@ -105,7 +113,7 @@ function ClubHours(data: { x: number, y: number }[]) {
             if (new Date(peek.x).toDateString() === new Date(d.x).toDateString()) {
                 peek.x = d.x;
                 peek.y += d.y
-            }else{
+            } else {
                 ret.push(d)
             }
         }
