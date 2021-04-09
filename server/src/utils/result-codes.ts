@@ -9,6 +9,8 @@ export const Codes = MakeCodes({
     "0000": "Success",
     "0011": "User already exists",
     "0404": "Item not found",
+    "invalid-platform": "The platform from which you are trying to make payment is not in service",
+    "iap-verification-failed": "Your purchase failed",
     "invalid-creds":"Invalid Email Address or Password",
     "no-auth": "Please provide authorization token",
     "invalid-jwt": "JWT token is not valid",

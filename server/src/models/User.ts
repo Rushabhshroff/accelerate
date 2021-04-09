@@ -25,46 +25,51 @@ export interface IUser extends Document {
     },
     photoUrl?: string,
     jwt(): string
-
+    inAppPurchases: any[]
 }
+
 export interface IUserModel extends Model<IUser> {
     authenticate(email: string, password: string): string
 }
+
 export const UserSchema = new Schema<IUser>({
-    firstName: { type: String },
-    lastName: { type: String },
-    phoneNumber: { type: String, unique: true, sparse: true },
-    gender: { type: String, enum: ["Male", "Female", "Other"] },
-    email: { type: String, required: [true, "email is required"], unique: true, sparse: true },
-    passwordHash: { type: String, required: [true, "Password is required"] },
-    passwordSalt: { type: String },
-    address: {
-        type:
-        {
-            line1: { type: String, required: [true, "Address Line1 is required"] },
-            line2: { type: String },
-            postalCode: { type: String, required: [true, "Postal is required"] },
-            city: { type: String, required: [true, "City is required"] },
-            state: { type: String, required: [true, "State is required"] },
-            country: { type: String, required: [true, "Country is required"] },
-            point: {
-                type: {
-                    title: { type: String, required: true },
-                    coordinates: { type: [Number], required: true }
-                }
+        firstName: { type: String },
+        lastName: { type: String },
+        phoneNumber: { type: String, unique: true, sparse: true },
+        gender: { type: String, enum: ["Male", "Female", "Other"] },
+        email: { type: String, required: [true, "email is required"], unique: true, sparse: true },
+        passwordHash: { type: String, required: [true, "Password is required"] },
+        passwordSalt: { type: String },
+        address: {
+            type:
+            {
+                line1: { type: String, required: [true, "Address Line1 is required"] },
+                line2: { type: String },
+                postalCode: { type: String, required: [true, "Postal is required"] },
+                city: { type: String, required: [true, "City is required"] },
+                state: { type: String, required: [true, "State is required"] },
+                country: { type: String, required: [true, "Country is required"] },
+                point: {
+                    type: {
+                        title: { type: String, required: true },
+                        coordinates: { type: [Number], required: true }
+                    }
+                },
             },
         },
-    },
-    photoUrl: { type: String },
-}, {
-    toJSON: {
-        transform: (doc, ret, options) => {
-            delete ret.passwordHash;
-            delete ret.passwordSalt
-            return ret;
+        photoUrl: { type: String },
+        inAppPurchases: [{type: Schema.Types.Mixed}]
+    }, 
+    {
+        toJSON: {
+            transform: (doc, ret, options) => {
+                delete ret.passwordHash;
+                delete ret.passwordSalt
+                return ret;
+            }
         }
     }
-});
+);
 
 UserSchema.pre('save', function (next) {
     var user = this;
@@ -87,6 +92,7 @@ UserSchema.pre('save', function (next) {
         })
     })
 })
+
 UserSchema.method('jwt', function () {
     return JWT.sign({
         _couchdb: {
@@ -100,6 +106,25 @@ UserSchema.method('jwt', function () {
     })
 })
 
+/*UserSchema.method('iAPJWT', function() {
+    let payload: { productId: string, subscription: boolean, purchaseDateAndTime: string }[]  = []
+
+    this.inAppPurchases.map((item: any) => {
+        payload.push({ productId: item.productId, 
+            subscription: item.subscription, 
+            purchaseDateAndTime: (parseFloat(item.purchaseTimeMillis)/1000).toString()})
+    })
+
+    let iAPJWT = JWT.sign(payload, {
+        subject: String(this._id),
+        keyid: 'accelerate',
+        expiresIn: '7d',
+        issuer: 'accelerate.fitness',
+    })
+
+    return iAPJWT;
+})*/
+
 UserSchema.static('authenticate', async function (email: string, password: string) {
     let user = await UserModel.findOne({ email }).exec()
     if (user) {
@@ -112,4 +137,5 @@ UserSchema.static('authenticate', async function (email: string, password: strin
         throw new ApiError('user-not-found', 404, Codes['user-not-found'])
     }
 })
+
 export const UserModel = model<IUser, IUserModel>('user', UserSchema);
