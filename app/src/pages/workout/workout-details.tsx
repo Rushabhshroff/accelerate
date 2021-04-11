@@ -20,9 +20,12 @@ export const WorkoutDetailsPage: React.FC<WorkoutDetailsPage> = (props) => {
     const [Alert] = useIonAlert();
     const [workout, SetWorkout] = useState<undefined | Workout>(undefined)
     const [exercises, SetExercises] = useState<Exercise[]>([])
-    const [OpenEditWorkout, DismissModal] = useIonModal(() => <EditWorkout templateMode={false} onDismiss={DismissModal} liveMode={false} exercises={exercises} workout={workout} />)
+    const [OpenEditWorkout, DismissModal] = useIonModal(() => <EditWorkout templateMode={false} onDismiss={OnModalDismiss} liveMode={false} exercises={exercises} workout={workout} />)
     useEffect(() => {
-        (async () => {
+        FetchWorkoutDetails()
+    }, [])
+    const FetchWorkoutDetails = () => {
+        return (async () => {
             let w = new Workout(await Workout.findById(props.match.params.id));
             let exs = await w.exercises()
             SetExercises(exs)
@@ -30,7 +33,7 @@ export const WorkoutDetailsPage: React.FC<WorkoutDetailsPage> = (props) => {
         })().catch((err) => {
             router.goBack()
         })
-    }, [])
+    }
     if (!workout) {
         return (
             <Loader />
@@ -64,6 +67,11 @@ export const WorkoutDetailsPage: React.FC<WorkoutDetailsPage> = (props) => {
                 }
             }]
         })
+    }
+
+    const OnModalDismiss = () => {
+        FetchWorkoutDetails();
+        DismissModal()
     }
     return (
         <IonPage>

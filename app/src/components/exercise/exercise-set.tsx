@@ -4,8 +4,9 @@ import React, { useEffect, useState } from 'react'
 import { Exercise, IExercise, WorkoutSet } from '../../database/models'
 import { ExercisePropsMap } from '../../database/models/exercise-props-map'
 import { useObjectReducer } from '../../hooks'
+import { useAppSettings } from '../../hooks/useAppSettings'
 import { useRestTimer } from '../../hooks/useRestTimer'
-import { AppSettings, Duration, StringUtils, Unit } from '../../utils'
+import { AppSettings, Duration, Sound, Sounds, StringUtils, Unit, Vibrate } from '../../utils'
 import { TouchableOpcity } from '../core'
 import './styles.scss'
 export interface ExerciseSet {
@@ -20,6 +21,7 @@ export interface ExerciseSet {
 }
 export const ExerciseSet: React.FC<ExerciseSet> = (props) => {
     const ShowTimer = useRestTimer();
+    const [settings] = useAppSettings()
     const exercise = props.exercise
     const prevEx = props.prevExercise
     const [set, UpdateSet] = useObjectReducer(props.set)
@@ -84,6 +86,9 @@ export const ExerciseSet: React.FC<ExerciseSet> = (props) => {
     useEffect(() => {
         if (props.OnMutate) props.OnMutate()
     }, [set.setType, set.weight, set.distance, set.time, set.reps])
+    useEffect(() => {
+        UpdateSet(props.set)
+    }, [props.set])
     const SetDone = () => {
         let enables = ExercisePropsMap[exercise.category]
         let updates: any = {}
@@ -96,6 +101,9 @@ export const ExerciseSet: React.FC<ExerciseSet> = (props) => {
             timestamp: Date.now(),
             ...updates
         })
+        if (settings.soundEffects) {
+            Sound.play("radar");
+        }
     }
     return (
         <IonItemSliding>

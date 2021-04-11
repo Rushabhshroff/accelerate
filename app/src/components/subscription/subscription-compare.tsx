@@ -5,6 +5,8 @@ import { plusText } from '../../icons'
 import { Header } from '../core'
 import './styles.scss'
 import Compare from '../../database/subscription.json'
+import { useInAppPurchase } from '../../hooks/useInAppPurchase'
+import { InAppPurchase } from '../../utils/in-app-purchase'
 export interface SubscriptionCompare {
 
 }
@@ -12,6 +14,14 @@ export interface SubscriptionCompare {
 
 export const SubscriptionCompare: React.FC<SubscriptionCompare> = (props) => {
     const [plan, SetPlan] = useState<'yr' | 'mo'>('yr')
+    const { fitnessPlus, monthlyPlus, yearlyPlus } = useInAppPurchase()
+    const Purchase = () => {
+        let product = plan === 'mo' ? monthlyPlus : yearlyPlus
+        if (product && !fitnessPlus) {
+            InAppPurchase.Purchase(product)
+        }
+    }
+    const areProductsAvailable = (monthlyPlus && monthlyPlus.state !== 'invalid') || (yearlyPlus && yearlyPlus.state !== 'invalid')
     return (
         <IonPage>
             <Header>
@@ -27,27 +37,26 @@ export const SubscriptionCompare: React.FC<SubscriptionCompare> = (props) => {
                         <IonIcon color='primary' style={{ fontSize: 34 }} icon={plusText} />
                     </sup></IonText>
                     <IonRow>
-                        <IonCol size='6'>
+                        {monthlyPlus && monthlyPlus?.state !== 'invalid' ? <IonCol size='6'>
                             <IonCard onClick={() => SetPlan('mo')} button mode='ios' className={`price-card${plan == 'mo' ? ' select' : ''}`}>
                                 <div className='all-center py-2'>
                                     <IonIcon size='large' icon={plusText} />
-                                    <IonText color='primary' className='text-bold my-2 xx-large'>₹30 <sub>/mo</sub></IonText>
+                                    <IonText color='primary' className='text-bold my-2 xx-large'>{monthlyPlus.price} <sub>/mo</sub></IonText>
                                     <IonText>Billed Monthly</IonText>
                                 </div>
                             </IonCard>
-                        </IonCol>
-                        <IonCol size='6'>
+                        </IonCol> : null}
+                        {yearlyPlus && yearlyPlus.state !== 'invalid' ? <IonCol size='6'>
                             <IonCard onClick={() => SetPlan('yr')} button mode='ios' className={`price-card${plan == 'yr' ? ' select' : ''}`}>
                                 <div className='all-center py-2'>
                                     <IonIcon size='large' icon={plusText} />
-                                    <IonText color='primary' className='text-bold my-2 xx-large'>₹299 <sub>/yr</sub></IonText>
+                                    <IonText color='primary' className='text-bold my-2 xx-large'>{yearlyPlus?.price} <sub>/yr</sub></IonText>
                                     <IonText>Billed Yearly</IonText>
-                                    <IonText color='primary'>( 17% Off )</IonText>
                                 </div>
                             </IonCard>
-                        </IonCol>
+                        </IonCol> : null}
                     </IonRow>
-                    <IonButton mode='ios'>Subscribe to {plan == 'mo' ? 'Monthly' : 'Annual'} Plan</IonButton>
+                    {areProductsAvailable ? <IonButton onClick={Purchase} disabled={fitnessPlus || !monthlyPlus || !yearlyPlus} mode='ios'>{fitnessPlus ? "Already a member" : `Subscribe to ${plan == 'mo' ? 'Monthly' : 'Annual'} Plan`}</IonButton> : null}
                     <div className='table mt-3 p-2'>
                         <IonRow className='head'>
                             <IonCol size='6'>Feature</IonCol>

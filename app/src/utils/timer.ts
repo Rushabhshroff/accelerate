@@ -1,4 +1,7 @@
 import { EventEmitter } from 'events'
+import { AppSettings } from './app-settings'
+import { Sound } from './sound'
+import { Vibrate } from './vibrate'
 
 export interface TimerEvents extends EventEmitter {
     on(ev: 'change', callback: (timeelapsed: number) => void): this
@@ -38,6 +41,10 @@ export class Timer extends EventEmitter implements TimerEvents {
         }
         this.emit('finished')
         this.running = false
+        Sound.play(AppSettings.current.restFinishSound);
+        if (AppSettings.current.vibrateOnRestFinish) {
+            Vibrate()
+        }
     }
     get percent() {
         return this.seconds ? (this.timeelapsed / this.seconds) * 100 : 0

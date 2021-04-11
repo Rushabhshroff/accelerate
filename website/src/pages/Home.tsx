@@ -83,5 +83,12 @@ const SectionData = [
     description: "Correct form is extremely crucial when it comes to weight training. This application provides the details, along with their visuals, for all the possible exercises you can think of.",
     mock: '/assets/mockups/02.png',
     mockAlt: "Exercise demos"
+  },
+  {
+    id:'routines',
+    title:"Workout Routine",
+    description:"Add Exercises once and start exercising with single touch using Routines. You can create workout routines by adding exercises once and then nextime start workout with one single touch.",
+    mock: '/assets/mockups/05.png',
+    mockAlt: "Workout Routines"
   }
 ]

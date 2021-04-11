@@ -6,6 +6,7 @@ export function useUserProfile() {
 
     useEffect(() => {
         const OnChange = (profile: any) => {
+            console.log(profile)
             SetProfile(profile);
         }
         UserProfile.events.on('change', OnChange)

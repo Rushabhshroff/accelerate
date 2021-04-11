@@ -15,6 +15,7 @@ import { SaveWorkout, ValidateWorkout } from './workout-functions'
 import { WorkoutStatsHeader } from './workout-stats-header'
 import './styles.scss'
 import { TimerButton } from '../core/timer-button'
+import { useMobileAds } from '../../hooks/useMobileAds'
 export interface EditWorkout {
     liveMode?: boolean,
     templateMode?: boolean,
@@ -32,11 +33,12 @@ export const EditWorkout: React.FC<EditWorkout> = (props) => {
     const [workout, SetWorkout] = useObjectReducer<IWorkout>(props.workout || new Workout({ name: "Workout", startTimestamp: Date.now() }))
     const [exercises, SetExercises] = useArrayReduer<IExercise>(props.exercises || [])
     const [summation, SetSummation] = useState<ExerciseValues>(ExerciseValues.default)
+    const { ShowInterstitial } = useMobileAds()
     const OnAddExercises = (exs: string[]) => {
         let add_exercises = exs.map((e) => {
             if (workout._id) {
                 return Exercise.from(e, workout._id)
-            }else{
+            } else {
                 return new Exercise()
             }
         })
@@ -67,6 +69,7 @@ export const EditWorkout: React.FC<EditWorkout> = (props) => {
                 await SaveWorkout(new Workout(workout), exercises.map((e) => new Exercise(e)), liveMode, templateMode);
                 WorkoutController.reset()
                 if (props.onDismiss) props.onDismiss()
+                ShowInterstitial()
             } catch (err) {
                 ShowToast(err.message, 1000)
             }

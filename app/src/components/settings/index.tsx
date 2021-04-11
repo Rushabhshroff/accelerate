@@ -20,7 +20,7 @@ export const Settings: React.FC<Settings> = (props) => {
             <IonContent>
                 <IonItemGroup>
                     <IonItemDivider>Account</IonItemDivider>
-                    <IonItem button detail lines='none'>
+                    <IonItem routerLink='/edit-profile' button detail lines='none'>
                         <IonIcon slot='start' icon={personOutline} />
                         <IonText>Profile</IonText>
                     </IonItem>
@@ -47,10 +47,10 @@ export const Settings: React.FC<Settings> = (props) => {
                         <IonIcon slot='start' icon={exitOutline} />
                         <IonText>Export Data</IonText>
                     </IonItem>
-                    <IonItem button detail lines='none'>
+                    {/*<IonItem button detail lines='none'>
                         <IonIcon slot='start' icon={refresh} />
                         <IonText color='danger'>Reset Data</IonText>
-                    </IonItem>
+    </IonItem>*/}
                 </IonItemGroup>
                 <IonItemGroup>
                     <IonItemDivider>Help</IonItemDivider>
@@ -79,7 +79,7 @@ export const Settings: React.FC<Settings> = (props) => {
                     </IonItem>
                 </IonItemGroup>
                 <section className='all-center'>
-                    <IonButton onClick={()=>Auth.SignOut()} style={{ width: '80%' }}>Logout</IonButton>
+                    <IonButton onClick={() => Auth.SignOut()} style={{ width: '80%' }}>Logout</IonButton>
                     <IonText className='m-2'>Made with ❤ in India</IonText>
                     <IonText className='m-2'>{version}</IonText>
                 </section>

@@ -10,8 +10,11 @@ import { Workout } from '../../../database'
 import { Duration } from '../../../utils'
 import { Auth } from '../../../api'
 import { useUserProfile } from '../../../hooks/useUserProfile'
+import { ProfileAvatar } from '../../../components/profile/profile-avatar'
+import { useInAppPurchase } from '../../../hooks/useInAppPurchase'
 export const ProfileTab: React.FC<RouteComponentProps> = (props) => {
     const profile = useUserProfile()
+    const { fitnessPlus } = useInAppPurchase()
     return (
         <IonPage>
             <Header>
@@ -20,29 +23,27 @@ export const ProfileTab: React.FC<RouteComponentProps> = (props) => {
                         <IonIcon size='large' icon={settingsOutline} />
                     </IonButton>
                 </IonButtons>
-                <IonButtons slot='start'>
-                    <IonButton color='primary'>Edit Profile</IonButton>
-                </IonButtons>
+                {profile ? <IonButtons slot='start'>
+                    <IonButton routerLink='/edit-profile' color='primary'>Edit Profile</IonButton>
+                </IonButtons> : null}
             </Header>
             <IonContent>
                 {profile ? <IonItem lines='full'>
-                    <IonAvatar slot='start' style={{ width: 70, height: 70 }}>
-                        <img src="/assets/placeholder/male.jpg" alt="" />
-                    </IonAvatar>
-                    <div className='d-flex flex-column'>
+                    <ProfileAvatar />
+                    <div className='d-flex flex-column ml-2'>
                         {profile.name ? <IonText>{profile.name}</IonText> : null}
                         {profile.email ? <IonText className='text-light small'>{profile.email}</IonText> : null}
                         {profile.gender ? <IonText className='text-light small'>{profile.gender}</IonText> : null}
                     </div>
                 </IonItem> : null}
                 <WorkoutProgressCharts />
-                <IonItem lines='none'>
+                {!fitnessPlus ? <IonItem lines='none'>
                     <IonText >Accelerate</IonText>
                     <IonIcon color='primary' size='large' className='mx-1' icon={plusText} />
                     <IonButton routerLink='/subscription' mode='ios' slot='end'>
                         Unlock
                     </IonButton>
-                </IonItem>
+                </IonItem> : null}
                 <IonItem routerLink='/exercises' button lines='none' detail>
                     <IonIcon slot='start' icon={barbellOutline} />
                     <IonText>Exercises</IonText>
@@ -51,10 +52,10 @@ export const ProfileTab: React.FC<RouteComponentProps> = (props) => {
                     <IonIcon slot='start' icon={rulerOutline} />
                     <IonText>Body Measures</IonText>
                 </IonItem>
-                <IonItem button lines='none' detail>
+                {/*<IonItem button lines='none' detail>
                     <IonIcon slot='start' icon={statsChartOutline} />
                     <IonText>Statestics</IonText>
-                </IonItem>
+    </IonItem>*/}
                 {/*<IonItem button lines='none' detail>
                     <IonIcon slot='start' icon={calculatorOutline} />
                     <IonText>Calculators</IonText>

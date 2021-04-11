@@ -31,7 +31,7 @@ export const RegisterPage: React.FC<RegisterPage> = (props) => {
         }
         Auth.CreateUserWithEmailAndPassword(email, password).catch((err) => {
             Alert({
-                message: err.error,
+                message: err.error || err.message,
                 buttons: [{ text: "Okay" }]
             })
         })

@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import { HeaderLinks } from '../DataMap'
-import {AppleBadge,GooglePlayBadge} from '.'
+import { AppleBadge, GooglePlayBadge } from '.'
 import './header.scss'
 export interface HeaderProps {
 
@@ -9,9 +9,9 @@ export interface HeaderProps {
 export const Header: React.FC<HeaderProps> = (props) => {
     return (
         <header className='container'>
-            <div className='brand'>
-                <img style={{maxHeight:60}} src="/assets/icon/logo_header.svg" alt="Logo" />
-            </div>
+            <Link to='/' className='brand'>
+                <img style={{ maxHeight: 60 }} src="/assets/icon/logo_header.svg" alt="Logo" />
+            </Link>
             <GooglePlayBadge className='link' style={{ height: 50, width: 150 }} />
         </header>
     )

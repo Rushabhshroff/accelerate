@@ -20,11 +20,6 @@
         "plus": "Unlimited"
     },
     {
-        "feature": "Premade Routines",
-        "free": "All",
-        "plus": "All"
-    },
-    {
         "feature": "Custom Exercises",
         "free": "10",
         "plus": "Unlimited"
@@ -33,11 +28,6 @@
         "feature": "Body Measurements",
         "free": "All",
         "plus": "All"
-    },
-    {
-        "feature": "Cloud Sync & Backup",
-        "free": "No",
-        "plus": "Yes"
     },
     {
         "feature": "Customize Colors",

@@ -9,14 +9,19 @@ interface StatusbarProps {
     barStyle: StatusBarStyle
 }
 export function SetStatusBarStyle(options: StatusbarProps) {
-    if (isPlatform('android') && isPlatform('capacitor')) {
+    if (options.backgroundColor.length === 4) {
+        options.backgroundColor += options.backgroundColor.slice(1);
+    }
+    if (isPlatform('android') && isPlatform('capacitor') && options.backgroundColor.length > 0) {
         StatusBar.setBackgroundColor({ color: options.backgroundColor })
     }
-    if(isPlatform('capacitor')){
-        StatusBar.setStyle({style:options.barStyle})
+    if (isPlatform('capacitor')) {
+        StatusBar.setStyle({ style: options.barStyle })
     }
-    let meta = document.getElementsByTagName('meta').namedItem('theme-color');
-    if(meta){
-        meta.content = options.backgroundColor
+    if (!isPlatform('capacitor')) {
+        let meta = document.getElementsByTagName('meta').namedItem('theme-color');
+        if (meta) {
+            meta.content = options.backgroundColor
+        }
     }
 }

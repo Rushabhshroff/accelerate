@@ -5,6 +5,7 @@ import { ExerciseList, Header } from '../../../components'
 import SwipeableViews from 'react-swipeable-views';
 import { add, barbell } from 'ionicons/icons';
 import { WorkoutSegment, RoutinesSegment } from '.'
+import { PendingWorkout } from '../../../components/workout/pending-workout';
 
 export const WorkoutTab: React.FC<RouteComponentProps> = (props) => {
     const [segment, SetSegment] = useState<'workout' | 'routine'>('workout')
@@ -38,6 +39,7 @@ export const WorkoutTab: React.FC<RouteComponentProps> = (props) => {
                     <RoutinesSegment {...props} />
                 </SwipeableViews>
             </IonContent>
+            <PendingWorkout/>
         </IonPage>
     )
 }

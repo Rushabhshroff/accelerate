@@ -1,54 +1,65 @@
 import { Router } from 'express'
 import ErrorProtectedRoute from "../utils/error-protected-route";
-import { ResponseData } from "../utils/response-data";
-import ApiError from '../utils/api-error';
 import { VerifyUserToken } from '../middlewares/authentication';
-import { Codes } from '../utils/result-codes';
-//@ts-ignore
-import iap from 'iap';
+import iap from '../utils/iap';
 import { UserModel } from '../models/user';
-import { JWT } from '../utils/jwt';
-
+import { iap as keyObject } from '../config.json';
+import { HandleIAPResponse, PurchaseResponseErrors } from '../controllers/in-app-purchase';
 export const InAppPurchases = Router()
 
 InAppPurchases.use(VerifyUserToken)
 
-InAppPurchases.post('/', ErrorProtectedRoute(async (req, res, next) => {
+InAppPurchases.post('/', ErrorProtectedRoute(async (req, res) => {
 
-    var platformMap = new Map([["android-playstore", 'google'], ["ios-appstore", "apple"]])    
-
-    if (platformMap.get(req.body.transaction.type) !== 'google')
-    {
-        throw new ApiError("invalid-platform", 400, Codes["invalid-platform"]);
+    var platformMap: { [key: string]: "google" | "apple" | undefined } = {
+        "android-playstore": "google",
+        "ios-appstore": "apple"
     }
-    else {
+    var platform = platformMap[req.body.transaction?.type];
+    if (!platform) {
+        res.send({
+            ok: false,
+            code: PurchaseResponseErrors.INVALID_PAYLOAD
+        })
+        return;
+    }
+    var payment = {
+        receipt: req.body.transaction.receipt,
+        productId: req.body.id,
+        packageName: "fitness.accelerate",
+        subscription: (req.body.transaction?.type == "free subscription" || req.body.transaction?.type == "paid subscription") ? true : false,
+        keyObject: platform == 'google' ? keyObject : undefined,
+        secret: platform == 'apple' ? "<IOS-SECRET-HERE>" : undefined
+    };
 
-        var payment = {
-            receipt: req.body.transaction.receipt,
-            productId: req.body.id,
-            packageName: "fitness.accelerate",
-            subscription: (req.body.transaction.type == "free subscription" || req.body.transaction.type == "paid subscription")?true:false,
-            keyObject: ""
-        };
-        
-        iap.verifyPayment(platformMap.get(req.body.transaction.type), payment, async (error: any, response: any) => {
-            if(error){
-                throw new ApiError("iap-verification-failed", 400, Codes["iap-verification-failed"])
-            }
-            else{
-                let resp = {
-                    ok : true,
-                    data : {
-                        transaction : req.body.transaction
-                    }
-                }
-                
-                if(!req.user.inAppPurchases.find((x: any) => x.transactionId == response.transactionId)){                    
+    iap.verifyPayment(platformMap[req.body.transaction.type], payment, async (error: any, response: any) => {
+        try {
+            let valid = HandleIAPResponse(platform, error, response)
+            if (valid) {
+                if (!req.user.inAppPurchases.find((x: any) => x.transactionId == response.transactionId)) {
                     req.user.inAppPurchases.push(req.body.receipt)
                     await UserModel.updateOne(req.user)
-                    res.send(ResponseData.get("0000").SetData(resp))
                 }
+                res.send({
+                    ok: true,
+                    data: {
+                        transaction: req.body.transaction
+                    }
+                })
             }
-        });
-    }
+        } catch (err) {
+            if (err.code) {
+                res.send({
+                    ok: false,
+                    data: err
+                })
+            } else {
+                res.send({
+                    ok: false,
+                    data: PurchaseResponseErrors.INTERNAL_ERROR
+                })
+            }
+        }
+    });
 }))
+

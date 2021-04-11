@@ -15,8 +15,8 @@ export const Footer: React.FC<FooterProps> = (props) => {
                 </IonCol>
                 <IonCol size='12' sizeMd='7'>
                     Copyright © {new Date().getFullYear()} Accelerate Fitness.
-<a href='/legal/privacy_policy.pdf'> Privacy Policy</a>
-                    <a href='/legal/terms_and_conditions.pdf'> Terms & Conditions</a>
+<a href='/legal/privacy_policy'> Privacy Policy</a>
+                    <a href='/legal/terms_and_conditions'> Terms & Conditions</a>
                 </IonCol>
             </IonRow>
         </footer>
