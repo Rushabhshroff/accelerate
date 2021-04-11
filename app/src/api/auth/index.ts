@@ -17,6 +17,7 @@ export class Auth {
                 }
             })
             Auth.events.emit('change', token)
+            res()
         })
     }
     static CreateUserWithEmailAndPassword(email: string, password: string) {
@@ -110,7 +111,8 @@ export class Auth {
 }
 export interface UserInfo {
     _id: string
-    name?: string,
+    firstName?: string,
+    lastName?: string,
     phoneNumber?: string,
     email: string,
     gender?: string,

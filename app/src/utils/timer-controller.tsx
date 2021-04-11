@@ -1,5 +1,8 @@
 import EventEmitter from "events";
+import { AppSettings } from "./app-settings";
+import { Sound } from "./sound";
 import { Timer, TimerEvents } from "./timer";
+import { Vibrate } from "./vibrate";
 
 export class TimerController {
     static active?: Timer
@@ -18,6 +21,7 @@ export class TimerController {
         TimerController.active?.removeAllListeners()
         TimerController.active = undefined;
         TimerController.events.emit('finished');
+        
     }
     static Cancel() {
         if (TimerController.active) {

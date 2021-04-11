@@ -41,13 +41,12 @@ import { BodyMeasuresPage } from './pages/body-measures';
 import { Api } from './api'
 import { AuthRoute } from './components/routes/auth-route';
 import { ProtectedRoute } from './components/routes';
+import { EditProfilePage } from './pages/auth';
+import { InAppPurchase } from './utils/in-app-purchase';
 const App: React.FC = () => {
   useEffect(() => {
     InitializeApp()
   }, [])
-  useEffect(() => {
-    SetStatusBarStyle({ backgroundColor: CSS.variable('--ion-background-color') || '#ffffff', barStyle: StatusBarStyle.Dark })
-  }, [AppSettings.current.theme.mode])
   return (
     <IonApp>
       <IonReactRouter>
@@ -57,6 +56,7 @@ const App: React.FC = () => {
           <AuthRoute exact path='/forgot-password' render={(props) => <ForgotPasswordPage />} />
           <ProtectedRoute path="/home" render={(props) => <Home {...props} />} />
           <ProtectedRoute path='/exercises' exact render={() => <ExerciseList />} />
+          <ProtectedRoute path='/edit-profile' exact render={() => <EditProfilePage />} />
           <ProtectedRoute exact path='/settings' render={() => <Settings />} />
           <ProtectedRoute exact path='/settings/workout' render={() => <WorkoutPreferences />} />
           <ProtectedRoute exact path='/settings/units' render={() => <UnitsPreferences />} />
@@ -79,11 +79,14 @@ const App: React.FC = () => {
 export default App;
 
 export async function InitializeApp() {
+ 
   await init_database()
   await ExerciseData.Load()
   await AppSettings.Load()
   await AppTheme.Load()
   await Api.init('http://192.168.0.161:8080')
+  console.log("Hola!!!")
+  InAppPurchase.initialize()
 }
 
 

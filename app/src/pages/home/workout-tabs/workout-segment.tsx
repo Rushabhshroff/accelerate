@@ -6,7 +6,8 @@ import { RouteComponentProps } from 'react-router'
 import { EditWorkout, HorizontalCalender } from '../../../components'
 import { WorkoutHistoryList } from '../../../components/workout/workout-history-list'
 import { Exercise, IWorkout, Workout } from '../../../database/models'
-import { WorkoutController } from '../../../utils'
+import { AppSettings, WorkoutController } from '../../../utils'
+import {PowerManagement} from '@ionic-native/power-management'
 import './styles.scss'
 
 export const WorkoutSegment: React.FC<RouteComponentProps> = (props) => {
@@ -55,6 +56,11 @@ export const WorkoutSegment: React.FC<RouteComponentProps> = (props) => {
             workout.startTimestamp = moment().toDate().getTime()
             WorkoutController.active = workout;
             WorkoutController.exercises = exercises;
+            if(AppSettings.current.screenAwake){
+                PowerManagement.acquire()
+                WorkoutController.wakelockAcquired = true;
+            }
+            WorkoutController.events.emit('change')
         }
         SetWorkout(workout);
         SetExercises(exercises);

@@ -3,6 +3,8 @@ import { arrowBack } from 'ionicons/icons'
 import React, { useRef } from 'react'
 import { BodyParts, ExerciseCategories, ExerciseData, ExerciseEquipments } from '../../database'
 import { useObjectReducer } from '../../hooks'
+import { useInAppPurchase } from '../../hooks/useInAppPurchase'
+import { useMobileAds } from '../../hooks/useMobileAds'
 import { Header } from '../core'
 
 export interface CreateExercise {
@@ -11,6 +13,8 @@ export interface CreateExercise {
 
 export const CreateExercise: React.FC<CreateExercise> = (props) => {
     const router = useIonRouter()
+    const { fitnessPlus } = useInAppPurchase()
+    const {ShowInterstitial} = useMobileAds()
     const [form, SetForm] = useObjectReducer<any>({
         exerciseName: undefined,
         bodypart: undefined,
@@ -18,8 +22,14 @@ export const CreateExercise: React.FC<CreateExercise> = (props) => {
         category: undefined
     })
     const OnSubmit = async () => {
-        await ExerciseData.Create(form)
-        Dismiss()
+        const customExCount = ExerciseData.dataset.filter((e) => e.custom === true).length
+        if (customExCount >= 10 && !fitnessPlus) {
+            router.push('/subscription')
+        } else {
+            await ExerciseData.Create(form)
+            Dismiss()
+            ShowInterstitial()
+        }
     }
     const CanSave = () => {
         for (let k in form) {
@@ -30,10 +40,10 @@ export const CreateExercise: React.FC<CreateExercise> = (props) => {
         }
         return true
     }
-    const Dismiss = ()=>{
-        if(props.onDismiss){
+    const Dismiss = () => {
+        if (props.onDismiss) {
             props.onDismiss()
-        }else{
+        } else {
             router.goBack()
         }
     }
@@ -51,10 +61,10 @@ export const CreateExercise: React.FC<CreateExercise> = (props) => {
                 <section>
                     <form onSubmit={(e) => e.preventDefault()}>
                         <IonItem lines='none' className='form-input my-2'>
-                            <IonInput onIonChange={(e) => SetForm({ exerciseName: e.detail.value })}  placeholder='Exercise Name' />
+                            <IonInput onIonChange={(e) => SetForm({ exerciseName: e.detail.value })} placeholder='Exercise Name' />
                         </IonItem>
                         <IonItem lines='none' className='form-input'>
-                            <IonSelect onIonChange={(e) => SetForm({ category: e.detail.value })}  style={{ width: '100%' }} placeholder='Select Exercise Type'>
+                            <IonSelect onIonChange={(e) => SetForm({ category: e.detail.value })} style={{ width: '100%' }} placeholder='Select Exercise Type'>
                                 {Object.keys(ExerciseCategories).map((k) => {
                                     return (
                                         <IonSelectOption key={k} value={k} >{ExerciseCategories[k]}</IonSelectOption>
@@ -63,7 +73,7 @@ export const CreateExercise: React.FC<CreateExercise> = (props) => {
                             </IonSelect>
                         </IonItem>
                         <IonItem lines='none' className='form-input my-2'>
-                            <IonSelect onIonChange={(e) => SetForm({ bodypart: e.detail.value })}  style={{ width: '100%' }} placeholder='Select Body Muscle'>
+                            <IonSelect onIonChange={(e) => SetForm({ bodypart: e.detail.value })} style={{ width: '100%' }} placeholder='Select Body Muscle'>
                                 {Object.keys(BodyParts).map((k) => {
                                     return (
                                         <IonSelectOption key={k} value={k} >{BodyParts[k]}</IonSelectOption>

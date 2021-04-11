@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "182170496713",
+    "project_id": "accelerate-fitness",
+    "storage_bucket": "accelerate-fitness.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:182170496713:android:703ef3ab513124dc006718",
+        "android_client_info": {
+          "package_name": "fitness.accelerate"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "182170496713-s60fpjg18q2ri5shfb6fmla5d72qjl4m.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA23KYBBa_8ctpcJmDEzw7IVRoALCPlncM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "182170496713-s60fpjg18q2ri5shfb6fmla5d72qjl4m.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,8 +1,9 @@
-import { IonBackButton, IonButtons, IonContent, IonIcon, IonItem, IonItemDivider, IonItemGroup, IonPage, IonRippleEffect, IonRow, IonSegment, IonSegmentButton, IonTitle } from '@ionic/react'
-import { checkmark } from 'ionicons/icons'
+import { IonBackButton, IonButtons, IonContent, IonIcon, IonItem, IonItemDivider, IonItemGroup, IonPage, IonRippleEffect, IonRow, IonSegment, IonSegmentButton, IonTitle, useIonAlert, useIonRouter } from '@ionic/react'
+import { checkmark, lockClosed } from 'ionicons/icons'
 import React from 'react'
 import { useAppSettings } from '../../hooks/useAppSettings'
-import { PrimaryColorOptions } from '../../utils/app-theme'
+import { useInAppPurchase } from '../../hooks/useInAppPurchase'
+import { AppTheme, PrimaryColorOptions } from '../../utils/app-theme'
 import { Header } from '../core'
 import './styles.scss'
 
@@ -11,6 +12,27 @@ export interface ThemePreferences {
 }
 export const ThemePreferences: React.FC<ThemePreferences> = (props) => {
     const [settings, ApplySettings] = useAppSettings()
+    const { fitnessPlus } = useInAppPurchase()
+    const [Alert] = useIonAlert();
+    const router = useIonRouter()
+    const AlertOptions = (color: string) => {
+        Alert({
+            message: "This is a plus feature. Although you can experience this theme for 30 seconds.",
+            buttons: [
+                {
+                    text: "Yes Try", handler: () => {
+                        AppTheme.TryTheme(color)
+                    }
+                },
+                {
+                    text: "Purchase Plus", handler: () => {
+                        router.push('/subscription')
+                    }
+                },
+                { text: "Cancel", role: 'Cancel' }
+            ]
+        })
+    }
     return (
         <IonPage>
             <Header>
@@ -45,18 +67,26 @@ export const ThemePreferences: React.FC<ThemePreferences> = (props) => {
                         {Object.keys(PrimaryColorOptions).map((key) => {
                             const current = settings.theme.primaryColor.toLowerCase() === key
                             const abs = current;
+                            const premium = PrimaryColorOptions[key].premium
                             return (
                                 <div key={key} className="pick-color-item">
                                     <div onClick={(e) => {
-                                        ApplySettings({
-                                            theme: {
-                                                ...settings.theme,
-                                                primaryColor: key
-                                            }
-                                        })
+                                        if (!fitnessPlus && premium) {
+                                            AlertOptions(key)
+                                        } else {
+                                            ApplySettings({
+                                                theme: {
+                                                    ...settings.theme,
+                                                    primaryColor: key
+                                                }
+                                            })
+                                        }
                                     }} style={{ backgroundColor: key }} className='circle ion-activatable ripple-parent'>
                                         {abs ? <div className='abs'>
                                             <IonIcon size='large' color='success' icon={checkmark} />
+                                        </div> : null}
+                                        {!fitnessPlus && premium ? <div className='abs'>
+                                            <IonIcon size='small' icon={lockClosed} />
                                         </div> : null}
                                         <IonRippleEffect></IonRippleEffect>
                                     </div>

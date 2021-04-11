@@ -13,6 +13,7 @@ export interface ExerciseHistoryItem {
     nowWorkout?: boolean
 }
 export const ExerciseHistoryItem: React.FC<ExerciseHistoryItem> = (props) => {
+    console.log(props.exercise)
     const [workout, SetWorkout] = useState<Workout | undefined>(undefined)
     let setCount = 0
     useEffect(() => {
@@ -31,6 +32,9 @@ export const ExerciseHistoryItem: React.FC<ExerciseHistoryItem> = (props) => {
                 </div>
             </IonItem> : null}
             <ExerciseListItem noDetail exercise={props.exerciseInfo} />
+            {props.exercise.note ? <IonItem lines='none'>
+                <IonText>{props.exercise.note}</IonText>
+            </IonItem> : null}
             <ExerciseSetHead ex={props.exercise} liveMode={false} />
             {props.exercise.sets.map((s) => {
                 if (s.setType !== 'warmup') {

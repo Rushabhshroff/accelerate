@@ -33,3 +33,9 @@ section[id] {
         }
     }
 }
+img{
+    &.mockup{
+        height: 572px;
+        width: auto;
+    }
+}

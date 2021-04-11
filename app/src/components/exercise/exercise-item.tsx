@@ -153,7 +153,9 @@ export const ExerciseItem: React.FC<ExerciseItem> = (props) => {
                     </IonButtons>
                 </IonItem>
                 {exercise.superset ? <div style={{ backgroundColor: exercise.superset }} className='badge badge-secondary'>Superset</div> : null}
-                <textarea placeholder='Enter Note Here...' />
+                <textarea defaultValue={exercise.note} onChange={(e) => {
+                    SetExercise({ note: e.currentTarget.value })
+                }} placeholder='Enter Note Here...' />
             </div>
             <ExerciseSetHead liveMode={liveMode} ex={exercise} />
             {exercise.sets.map((set) => {

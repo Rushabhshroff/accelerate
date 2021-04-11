@@ -5,7 +5,8 @@ import { Codes } from '../utils/result-codes';
 import bcrypt from 'bcryptjs'
 
 export interface IUser extends Document {
-    name?: string,
+    firstName?: string,
+    lastName?: string,
     phoneNumber?: string,
     email: string,
     gender?: string,
@@ -25,16 +26,18 @@ export interface IUser extends Document {
     },
     photoUrl?: string,
     jwt(): string
-
+    inAppPurchases: any[]
 }
+
 export interface IUserModel extends Model<IUser> {
     authenticate(email: string, password: string): string
 }
+
 export const UserSchema = new Schema<IUser>({
     firstName: { type: String },
     lastName: { type: String },
     phoneNumber: { type: String, unique: true, sparse: true },
-    gender: { type: String, enum: ["Male", "Female", "Other"] },
+    gender: { type: String, enum: ["Male", "Female", "Other",""] },
     email: { type: String, required: [true, "email is required"], unique: true, sparse: true },
     passwordHash: { type: String, required: [true, "Password is required"] },
     passwordSalt: { type: String },
@@ -56,15 +59,19 @@ export const UserSchema = new Schema<IUser>({
         },
     },
     photoUrl: { type: String },
-}, {
-    toJSON: {
-        transform: (doc, ret, options) => {
-            delete ret.passwordHash;
-            delete ret.passwordSalt
-            return ret;
+    inAppPurchases: [{ type: Schema.Types.Mixed }]
+},
+    {
+        toJSON: {
+            transform: (doc, ret, options) => {
+                delete ret.passwordHash;
+                delete ret.passwordSalt
+                delete ret.inAppPurchases
+                return ret;
+            }
         }
     }
-});
+);
 
 UserSchema.pre('save', function (next) {
     var user = this;
@@ -87,6 +94,7 @@ UserSchema.pre('save', function (next) {
         })
     })
 })
+
 UserSchema.method('jwt', function () {
     return JWT.sign({
         _couchdb: {
@@ -112,4 +120,5 @@ UserSchema.static('authenticate', async function (email: string, password: strin
         throw new ApiError('user-not-found', 404, Codes['user-not-found'])
     }
 })
+
 export const UserModel = model<IUser, IUserModel>('user', UserSchema);

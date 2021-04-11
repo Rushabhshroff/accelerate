@@ -3,8 +3,8 @@ import { Workout } from "../database";
 import xlsx from 'xlsx'
 import { Plugins } from '@capacitor/core';
 import { isPlatform } from "@ionic/react";
-
-const { Share } = Plugins;
+import { saveAs } from 'file-saver'
+const { Filesystem, FilesystemDirectory, FilesystemEncoding, Share } = Plugins;
 export interface CSVExportObject {
     title: string,
     start_time: string,
@@ -67,15 +67,28 @@ export class DataExporter {
             if (data.length <= 0) {
                 data.push(EmptyCSVObject)
             }
+
+            let sheet = xlsx.utils.json_to_sheet(data);
+            let csv = xlsx.utils.sheet_to_csv(sheet);
+            let blob = new Blob([csv], { type: 'text/csv' })
+            let name = Date.now().toString(36)
             if (isPlatform('capacitor')) {
-                let sheet = xlsx.utils.json_to_sheet(data);
-                let csv = xlsx.utils.sheet_to_csv(sheet);
-                let file = new File([csv], 'WorkoutData.csv', { type: 'text/csv' })
-                await Share.share({
-                    dialogTitle: "Export Workout CSV",
+                return Filesystem.writeFile({
+                    path: `accelerate-export-${name}.csv`,
+                    data: csv,
                     //@ts-ignore
-                    files: [file]
+                    directory: "CACHE",
+                    //@ts-ignore
+                    encoding: "utf8"
+                }).then((res) => {
+                    Share.share({
+                        title: "Workout Data",
+                        dialogTitle: "Export Workout Data",
+                        url: res.uri
+                    })
                 })
+            } else {
+                saveAs(blob, 'WorkoutData.csv')
             }
         })
     }

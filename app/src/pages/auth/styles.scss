@@ -1,0 +1,11 @@
+.upload-button{
+    position: relative;
+    min-height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;  
+    ion-button{
+        pointer-events: none;
+    } 
+}

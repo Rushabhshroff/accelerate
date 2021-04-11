@@ -1,4 +1,4 @@
-import { Router } from 'express'
+import express, { Router } from 'express'
 import ErrorProtectedRoute from "../utils/error-protected-route";
 import { ResponseData } from "../utils/response-data";
 import { IUser, UserModel } from "../models/user";
@@ -36,15 +36,19 @@ UserRoutes.post('/', RequestFilter(['_id', 'passwordHash', 'passwordSalt']), Err
     let updateData = req.body
     let user = (req.user as IUser)
     if (updateData.photoUrl) {
-        if (validator.isBase64(updateData.photoUrl)) {
-            let match = String(updateData.photoUrl).match(/[^:/]\w+(?=;|,)/)
+        if (!validator.isURL(updateData.photoUrl)) {
+            let base64Data = String(updateData.photoUrl);
+            let match = base64Data.match(/[^:/]\w+(?=;|,)/)
             let ext = match ? match[0] : ''
             let location = `profile-images/${user._id}${ext ? '.' + ext : ''}`
             try {
-                await S3().putObject({
+                let res = await S3().putObject({
                     Bucket: ImageBucket,
                     Key: location,
-                    Body: updateData.photoUrl
+                    Body: Buffer.from(base64Data,'base64'),
+                    GrantReadACP:'public',
+                }).send((err) => {
+                    console.log(err)
                 })
                 updateData.photoUrl = `https://${ImageBucket}.s3.amazonaws.com/${location}`
             } catch {
@@ -52,6 +56,7 @@ UserRoutes.post('/', RequestFilter(['_id', 'passwordHash', 'passwordSalt']), Err
             }
         }
     }
-    await (req.user as IUser).updateOne(updateData)
-    res.send(ResponseData.get('0000').SetData((req.user as IUser).toJSON()))
+    Object.assign(user,updateData);
+    await user.save();
+    res.send(ResponseData.get('0000').SetData((user).toJSON()))
 }))

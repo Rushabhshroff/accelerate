@@ -13,7 +13,8 @@ export interface IExerciseInfo extends Document {
     thumbnail?: string,
     imageUrl?: string,
     videoUrl?: string,
-    equipment: string
+    equipment: string,
+    custom?: boolean
 }
 
 export class ExerciseInfo extends model<IExerciseInfo>('exercise_info') {
@@ -46,7 +47,8 @@ export class ExerciseData {
         let info = new ExerciseInfo({
             ...exercise,
             instructions: [],
-            mediaType: ''
+            mediaType: '',
+            custom: true
         })
         await info.save()
         ExerciseData._insert(info);

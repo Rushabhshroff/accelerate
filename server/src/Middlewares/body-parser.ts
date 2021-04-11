@@ -1,6 +1,6 @@
-var bodyparser = require('body-parser')
+import express from 'express'
 
-export const BodyParser =  [
-    bodyparser.json(),
-    bodyparser.urlencoded({ extended: true })
+export const BodyParser = [
+    express.json({ limit: "50mb" }),
+    express.urlencoded({ extended: true }),
 ]

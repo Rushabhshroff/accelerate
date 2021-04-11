@@ -22,15 +22,23 @@ import '@ionic/react/css/display.css';
 /* Theme variables */
 import './theme/variables.css';
 import './theme/app.scss'
+import { PrivacyPolicy } from './pages/privacy-policy';
+import { TermsAndConditions } from './pages/terms-and-conditions';
 const App: React.FC = () => (
-  
-    <BrowserRouter>
-      <Switch>
-        <Route exact path='/'>
-          <Home />
-        </Route>
-      </Switch>
-    </BrowserRouter>
+
+  <BrowserRouter>
+    <Switch>
+      <Route exact path='/'>
+        <Home />
+      </Route>
+      <Route exact path='/legal/privacy_policy'>
+        <PrivacyPolicy />
+      </Route>
+      <Route exact path='/legal/terms_and_conditions'>
+        <TermsAndConditions />
+      </Route>
+    </Switch>
+  </BrowserRouter>
 );
 
 export default App;

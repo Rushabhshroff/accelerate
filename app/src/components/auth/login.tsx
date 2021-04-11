@@ -31,7 +31,7 @@ export const LoginPage: React.FC<LoginPage> = (props) => {
         }
         Auth.SignInWithEmailAndPassword(email, password).catch((err) => {
             Alert({
-                message: err.error,
+                message: err.error || err.message,
                 buttons: [{ text: "Okay" }]
             })
         })
@@ -53,7 +53,7 @@ export const LoginPage: React.FC<LoginPage> = (props) => {
                     <IonItem lines='none' className='form-input'>
                         <IonInput value={password} onIonChange={(e) => SetPassword(e.detail.value || '')} placeholder='Password' type='password' />
                     </IonItem>
-                    <IonRouterLink routerLink='/forgot-password' className='text-right form-text m-2'>Forgot password?</IonRouterLink>
+                    {/*<IonRouterLink routerLink='/forgot-password' className='text-right form-text m-2'>Forgot password?</IonRouterLink>*/}
                     <IonButton onClick={Login} disabled={!validator.isEmail(email) || validator.isEmpty(password)} type='submit'>
                         Login
                 </IonButton>

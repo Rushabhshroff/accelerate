@@ -176,3 +176,9 @@ ion-fab {
 .virtual-list {
     background-color: var(--background, var(--ion-background-color), #000);
 }
+input[type=file]{
+    opacity: 0;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+}
