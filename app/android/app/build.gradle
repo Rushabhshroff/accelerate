@@ -6,8 +6,8 @@ android {
         applicationId "fitness.accelerate"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 1
-        versionName "0.0a"
+        versionCode 2
+        versionName "0.1a(2)"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {

@@ -24,6 +24,7 @@ export function useStartRoutine(routine?: WorkoutRoutine) {
     const Start = () => {
         WorkoutController.active = workout
         WorkoutController.exercises = exercises
+        WorkoutController.events.emit('change')
         OpenModal({ mode: 'ios', swipeToClose: true })
     }
     return () => {

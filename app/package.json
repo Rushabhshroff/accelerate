@@ -1,6 +1,6 @@
 {
   "name": "@accelerate/app",
-  "version": "v0.0.1 Beta",
+  "version": "0.1a(2)",
   "private": true,
   "dependencies": {
     "@capacitor/android": "^2.4.7",

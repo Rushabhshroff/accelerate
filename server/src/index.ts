@@ -9,11 +9,7 @@ import http from 'http';
 
 const app = express()
 
-mongoose.connect("mongodb+srv://admin:U6PXNTcCMvuWJQUH@cluster0.jkbm8.mongodb.net/accelerate?retryWrites=true&w=majority", {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-    useCreateIndex: true
-})
+
 
 app.use(cors());
 app.use(BodyParser);
@@ -29,6 +25,13 @@ app.use((err: Error | ApiError, req: Request, res: Response, next: NextFunction)
 
 const server = http.createServer(app);
 
-server.listen(process.env.PORT || 8080, () => {
-    console.log("Server Running...")
+
+mongoose.connect("mongodb+srv://admin:U6PXNTcCMvuWJQUH@cluster0.jkbm8.mongodb.net/accelerate?retryWrites=true&w=majority", {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+    useCreateIndex: true
+}).then(()=>{
+    server.listen(process.env.PORT || 8080, () => {
+        console.log("Server Running...")
+    })
 })

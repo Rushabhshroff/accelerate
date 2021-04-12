@@ -43,6 +43,7 @@ import { AuthRoute } from './components/routes/auth-route';
 import { ProtectedRoute } from './components/routes';
 import { EditProfilePage } from './pages/auth';
 import { InAppPurchase } from './utils/in-app-purchase';
+import { Website } from './components/website';
 const App: React.FC = () => {
   useEffect(() => {
     InitializeApp()
@@ -51,6 +52,8 @@ const App: React.FC = () => {
     <IonApp>
       <IonReactRouter>
         <IonRouterOutlet animated={true}>
+          <Route exact path='/privacy_policy' render={(props) => <Website url='/legal/privacy_policy' />} />
+          <Route exact path='/terms_and_conditions' render={(props) => <Website url='/legal/terms_and_conditions' />} />
           <AuthRoute exact path='/login' render={(props) => <LoginPage />} />
           <AuthRoute exact path='/register' render={(props) => <RegisterPage />} />
           <AuthRoute exact path='/forgot-password' render={(props) => <ForgotPasswordPage />} />
@@ -79,13 +82,11 @@ const App: React.FC = () => {
 export default App;
 
 export async function InitializeApp() {
- 
   await init_database()
   await ExerciseData.Load()
   await AppSettings.Load()
   await AppTheme.Load()
-  await Api.init('http://192.168.0.161:8080')
-  console.log("Hola!!!")
+  await Api.init('https://api.accelerate.fitness')
   InAppPurchase.initialize()
 }
 

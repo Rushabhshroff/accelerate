@@ -10,7 +10,7 @@ interface RegisterPage {
 }
 
 export const RegisterPage: React.FC<RegisterPage> = (props) => {
-    const [Alert, Dismiss] = useIonAlert()
+    const [Alert] = useIonAlert()
     const [email,SetEmail] = useState<string>('')
     const [password,SetPassword] = useState<string>('')
 
@@ -58,7 +58,7 @@ export const RegisterPage: React.FC<RegisterPage> = (props) => {
                 </IonButton>
                     <IonText className='m-2'>Already have an account? <IonRouterLink routerDirection='none' routerLink='/login'>Login</IonRouterLink></IonText>
                     <div style={{ flex: 1 }} />
-                    <IonText className='m-2 text-center'>By using this app you agree to our <IonRouterLink>Terms of Service</IonRouterLink> and <IonRouterLink>Privacy Policy</IonRouterLink></IonText>
+                    <IonText className='m-2 text-center'>By using this app you agree to our <IonRouterLink routerLink='/terms_and_conditions'>Terms of Service</IonRouterLink> and <IonRouterLink routerLink='/privacy_policy'>Privacy Policy</IonRouterLink></IonText>
                 </section>
             </IonContent>
         </IonPage>

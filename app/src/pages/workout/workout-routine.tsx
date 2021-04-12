@@ -50,17 +50,19 @@ export const WorkoutRoutinesPage: React.FC<WorkoutRoutinePage> = (props) => {
             }
         ])
     }
-    const Duplicate = ()=>{
+    const Duplicate = () => {
         Alert({
-            header:"Duplicate",
-            message:"Duplicate this Routine",
-            inputs:[{placeholder:"Routine Name",name:'name'}],
-            buttons:[
-                {text:'Cancel',role:'cancel'},
-                {text:'Save',handler:async (data)=>{
-                    let r = new WorkoutRoutine({name:data.name || routine.name,exercises:routine.exercises})
-                    await r.save();
-                }}
+            header: "Duplicate",
+            message: "Duplicate this Routine",
+            inputs: [{ placeholder: "Routine Name", name: 'name' }],
+            buttons: [
+                { text: 'Cancel', role: 'cancel' },
+                {
+                    text: 'Save', handler: async (data) => {
+                        let r = new WorkoutRoutine({ name: data.name || routine.name, exercises: routine.exercises })
+                        await r.save();
+                    }
+                }
             ]
         })
     }
@@ -76,9 +78,9 @@ export const WorkoutRoutinesPage: React.FC<WorkoutRoutinePage> = (props) => {
                     </div>
                 </IonItem>
                 <IonButtons slot='end'>
-                    <IonButton>
+                    {/*<IonButton>
                         <IonIcon icon={isPlatform('ios') ? shareOutline : shareSocial} />
-                    </IonButton>
+                    </IonButton>*/}
                     <PopoverButton>
                         <PopoverItem onClick={EditRoutine} button >Edit</PopoverItem>
                         <PopoverItem onClick={Duplicate} button >Duplicate</PopoverItem>

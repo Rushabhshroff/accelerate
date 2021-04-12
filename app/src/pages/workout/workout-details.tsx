@@ -86,9 +86,9 @@ export const WorkoutDetailsPage: React.FC<WorkoutDetailsPage> = (props) => {
                     </div>
                 </IonItem>
                 <IonButtons slot='end'>
-                    <IonButton>
+                    {/*<IonButton>
                         <IonIcon icon={isPlatform('ios') ? shareOutline : shareSocial} />
-                    </IonButton>
+                    </IonButton>*/}
                     <PopoverButton>
                         <PopoverItem onClick={() => OpenEditWorkout({ mode: 'ios', swipeToClose: true })} button >Edit</PopoverItem>
                         <PopoverItem onClick={() => CreateTemplate()} button >Save as Routine</PopoverItem>

@@ -1,4 +1,4 @@
-import { PurchaseResponseErrors } from "..";
+import { PurchaseResponseErrors } from "../purchase-error-responses";
 
 export function HandlePlayStoreResponse(err: any, res: any) {
     if (err) {
