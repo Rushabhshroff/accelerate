@@ -56,7 +56,6 @@ exports.verifyPayment = function (payment, cb) {
 		if (error) {
 			return cb(error);
 		}
-
 		let requestUrl;
 
 		if (payment.subscription) {

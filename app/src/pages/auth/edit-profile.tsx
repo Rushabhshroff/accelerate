@@ -48,9 +48,6 @@ export const EditProfilePage: React.FC<EditProfilePage> = (props) => {
             }
         }
     }
-    useEffect(() => {
-        console.log(profileImage)
-    }, [profileImage])
     return (
         <IonPage>
             <Header>

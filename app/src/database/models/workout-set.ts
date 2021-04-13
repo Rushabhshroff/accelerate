@@ -50,25 +50,41 @@ export class WorkoutSet implements WorkoutSet {
         return oneRM(this.weight?.value || 0, this.reps?.value || 0)
     }
     validate(props: ActiveExerciseProps) {
+        let isValid = false;
         for (let key in props) {
-            if (this[key] == undefined) {
-                return false
+            if (this[key] !== undefined) {
+                isValid = true;
+                break;
             }
         }
-        return true;
+        if (isValid) {
+            for (let key in props) {
+                if (this[key] === undefined) {
+                    this[key] = defaultValues[key]
+                }
+            }
+        }
+        return isValid;
     }
     toString(category: ExerciseCategory) {
         switch (category) {
             case 'assisted-body':
             case 'weight-reps':
             case 'weighted-bodyweight':
-                return `${this.weight?.toString()} x ${this.reps?.value}`
+                return `${this.weight?.toString() || 0} x ${this.reps?.value || 0}`
             case 'reps-only':
-                return `${this.reps}`
+                return `${this.reps || 0}`
             case 'distance-duration':
-                return `${this.distance?.toString()} | ${this.time}`
+                return `${this.distance?.toString() || 0} | ${this.time}`
             case 'duration':
-                return `${this.time}`
+                return `${this.time || '00:00'}`
         }
     }
+}
+
+const defaultValues: any = {
+    'weight': 0,
+    'time': '00:00',
+    'distance': 0,
+    'reps': 0
 }

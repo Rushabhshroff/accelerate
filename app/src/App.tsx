@@ -1,7 +1,7 @@
 import { Redirect, Route } from 'react-router-dom';
-import { IonApp, IonRouterOutlet, useIonModal } from '@ionic/react';
+import { IonApp, IonRouterOutlet, useIonAlert, useIonModal, useIonRouter } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
-import { ExerciseDetailsPage, Home } from './pages';
+import { ExerciseDetailsPage, Home, RoutineEditPage, WorkoutEditPage } from './pages';
 
 /* Core CSS required for Ionic components to work properly */
 import '@ionic/react/css/core.css';
@@ -27,10 +27,10 @@ import { useEffect } from 'react';
 import { AppSettings, SetStatusBarStyle, Unit, WorkoutController } from './utils';
 import { CSS } from './utils/css';
 import { StatusBarStyle } from '@capacitor/core';
-import { ExerciseList, RegisterPage, LoginPage, ForgotPasswordPage, Settings, CreateExercise, WorkoutPreferences } from './components';
+import { ExerciseList, RegisterPage, LoginPage, ForgotPasswordPage, Settings, CreateExercise, WorkoutPreferences, EditWorkout } from './components';
 import { WorkoutDetailsPage, WorkoutRoutinesPage } from './pages';
 
-import { ExerciseData, init_database } from './database';
+import { ExerciseData, init_database, Workout } from './database';
 import { SubscriptionCompare } from './components/subscription';
 import { ManageSubscriptionPage } from './components/subscription/subscription-manage';
 import { UnitsPreferences } from './components/settings/units-preferences';
@@ -44,9 +44,31 @@ import { ProtectedRoute } from './components/routes';
 import { EditProfilePage } from './pages/auth';
 import { InAppPurchase } from './utils/in-app-purchase';
 import { Website } from './components/website';
+import { Plugins } from '@capacitor/core'
+import { URLUtils } from './utils/url-utils';
+import { IAPProduct, InAppPurchase2 as Store } from '@ionic-native/in-app-purchase-2'
 const App: React.FC = () => {
+  const [Alert] = useIonAlert()
   useEffect(() => {
+    const OnBackButton = () => {
+      if (window.location.pathname.includes('/home')) {
+        Alert('Do you want to exit App?', [{ text: 'Cancel' }, {
+          text: "Exit App", handler: () => {
+            Plugins.App.exitApp()
+          }
+        }])
+      }
+    }
+    const OnProductPurchased = (p: IAPProduct) => {
+      Alert("Congratulation! Unlocked Accelerate Plus.", [{ text: 'Close' }])
+    }
+    Plugins.App.addListener('backButton', OnBackButton)
+    Store.when('product').owned(OnProductPurchased)
     InitializeApp()
+    return () => {
+      Plugins.App.removeAllListeners()
+      Store.off(OnProductPurchased);
+    }
   }, [])
   return (
     <IonApp>
@@ -67,9 +89,14 @@ const App: React.FC = () => {
           <ProtectedRoute exact path='/export-data' render={() => <ExportData />} />
           <ProtectedRoute exact path='/subscription' render={() => <SubscriptionCompare />} />
           <ProtectedRoute exact path='/subscription/manage' render={() => <ManageSubscriptionPage />} />
-          <ProtectedRoute exact path='/exercise/:id' render={(props) => <ExerciseDetailsPage {...props} />} />
-          <ProtectedRoute exact path='/workout/:id' render={(props) => <WorkoutDetailsPage {...props} />} />
-          <ProtectedRoute exact path='/routine/:id' render={(props) => <WorkoutRoutinesPage {...props} />} />
+          <ProtectedRoute exact path='/exercise/details/:id' render={(props) => <ExerciseDetailsPage {...props} />} />
+          <ProtectedRoute exact path='/workout/create' render={(props) => <EditWorkout liveMode={false} workout={new Workout({ name: "Workout", startTimestamp: Number(URLUtils.current.queryParams.get('date')) || Date.now() })} exercises={[]} />} />
+          <ProtectedRoute exact path='/workout/current' render={(props) => <EditWorkout liveMode={true} workout={WorkoutController.active} exercises={WorkoutController.exercises} />} />
+          <ProtectedRoute exact path='/workout/edit/:id' render={(props) => <WorkoutEditPage {...props} />} />
+          <ProtectedRoute exact path='/workout/details/:id' render={(props) => <WorkoutDetailsPage {...props} />} />
+          <ProtectedRoute exact path='/routine/create' render={(props) => <EditWorkout liveMode={false} workout={new Workout({ name: "Routine", startTimestamp: 0 })} exercises={[]} templateMode={true} />} />
+          <ProtectedRoute exact path='/routine/edit/:id' render={(props) => <RoutineEditPage {...props} />} />
+          <ProtectedRoute exact path='/routine/details/:id' render={(props) => <WorkoutRoutinesPage {...props} />} />
           <ProtectedRoute exact path='/body-measures' render={() => <BodyMeasuresPage />} />
           <ProtectedRoute exact path='/create-exercise' render={(props) => <CreateExercise />} />
           <ProtectedRoute exact path="/" render={(props) => <Redirect to='/login' />} />
@@ -88,7 +115,8 @@ export async function InitializeApp() {
   await AppTheme.Load()
   await Api.init('https://api.accelerate.fitness')
   InAppPurchase.initialize()
+
 }
 
-
+/*'https://api.accelerate.fitness'*/
 

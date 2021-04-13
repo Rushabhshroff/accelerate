@@ -8,7 +8,7 @@ export const ProtectedRoute: React.FC<RouteProps<any, any>> = (props) => {
     const token = useAuth()
     useEffect(() => {
         if (!token) {
-            router.push('/login', 'root')
+            router.push('/login', 'forward','replace')
         }
     },[token])
     return (

@@ -12,4 +12,7 @@ export class StringUtils {
         }
         return sant.replace(/\B(?=(\d{2})+(?!\d))/g, ':').substr(0, 7)
     }
+    static UrlParseParams(url:string){
+        return new URL(url).searchParams
+    }
 }

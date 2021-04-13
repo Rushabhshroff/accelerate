@@ -19,7 +19,7 @@ export const ExerciseInfo: React.FC<ExerciseInfo> = (props) => {
     const media = getMedia()
     return (
         <IonContent>
-            {media ? <img src={`/assets/workouts/${media}`} alt="" /> : null}
+            {media ? <img src={`/assets/workouts${media.toLowerCase()}`} alt="" /> : null}
             <div className='p-3'>
                 <IonText>Instructions</IonText>
                 <ol style={{ padding: "5px 25px" }}>

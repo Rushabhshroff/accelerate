@@ -27,7 +27,7 @@ export const WorkoutHistoryListItem: React.FC<WorkoutHistoryListItem> = (props) 
     let more = exercises.length - 5
     return (
         <IonCol size='12' sizeLg='4' sizeMd='6'>
-            <IonCard routerLink={`/workout/${workout._id}`} button className='workout-history-list-item'>
+            <IonCard routerLink={`/workout/details/${workout._id}`} button className='workout-history-list-item'>
                 <IonItem lines='none'>
                     <div>
                         <IonText className='block-text'>{workout.name}</IonText>

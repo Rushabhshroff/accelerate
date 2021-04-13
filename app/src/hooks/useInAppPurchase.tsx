@@ -3,7 +3,7 @@ import { InAppPurchase2 as store, IAPProduct, IAPError } from '@ionic-native/in-
 import { InAppPurchase } from '../utils/in-app-purchase'
 import { isPlatform, useIonAlert } from '@ionic/react'
 
-export function useInAppPurchase() {
+export function useInAppPurchase(OnNewPurchase?:(product:IAPProduct)=>void) {
     const cache = InAppPurchase.Cache
     const [Owned, SetOwned] = useState(store.products?.filter(f => f.owned) || null)
     const [Alert] = useIonAlert()
@@ -11,6 +11,7 @@ export function useInAppPurchase() {
         if (isPlatform('capacitor')) {
             const OnUpdate = (product: IAPProduct) => {
                 SetOwned(store.products.filter(f => f.owned))
+                console.info(JSON.stringify(product))
             }
             const OnError = (err: IAPError) => {
                 Alert({
@@ -21,6 +22,7 @@ export function useInAppPurchase() {
             }
             store.when('product')
                 .updated(OnUpdate)
+                .owned(OnNewPurchase || function(){})
                 .error(OnError);
             return () => {
                 store.off(OnUpdate);

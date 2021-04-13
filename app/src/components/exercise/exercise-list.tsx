@@ -9,6 +9,7 @@ import { useDimension } from '../../hooks'
 import { ExerciseListItem } from './exercise-list-item'
 import { ExerciseData, ExerciseInfo } from '../../database/models/exercise-data'
 import { ExerciseFilter } from './exercise-filter'
+import { CreateExercise } from './exercise-new'
 interface ExerciseListProps {
     onDismiss?: () => void,
     selectionMode?: boolean,
@@ -21,8 +22,9 @@ export const ExerciseList: React.FC<ExerciseListProps> = (props) => {
     const [selectedExercises, SetSelectedExercises] = useState<string[]>([])
     const [bodyparts, SetBodyparts] = useState<string[]>([])
     const [equipments, SetEquipments] = useState<string[]>([])
-    const [search,SetSearch] = useState('')
+    const [search, SetSearch] = useState('')
     const { width, height } = useDimension()
+    const [ShowNewExerciseModal, HideNewExerciseModal] = useIonModal(<CreateExercise onDismiss={()=>OnDismissCreateExercise()} />)
     const [ShowFilterModal, HideFilterModal] = useIonModal(() => <ExerciseFilter bodyparts={bodyparts} equipments={equipments} onDismiss={OnDismissFilter} />)
     const OnSelect = (checked: boolean, exId: string) => {
 
@@ -51,6 +53,10 @@ export const ExerciseList: React.FC<ExerciseListProps> = (props) => {
         SetBodyparts(data.bodyparts)
         SetEquipments(data.equipments)
     }
+    const OnDismissCreateExercise = () => {
+        HideNewExerciseModal();
+        SetExercises(ExerciseData.dataset)
+    }
     useEffect(() => {
         let exs = [...ExerciseData.dataset]
         if (bodyparts.length > 0 || equipments.length > 0 || search.length > 0) {
@@ -60,12 +66,12 @@ export const ExerciseList: React.FC<ExerciseListProps> = (props) => {
             if (equipments.length > 0) {
                 exs = exs.filter((e) => equipments.includes(e.equipment))
             }
-            if(search.length > 0){
-                exs = exs.filter((e)=>e.exerciseName.toLowerCase().includes(search.toLowerCase()))
+            if (search.length > 0) {
+                exs = exs.filter((e) => e.exerciseName.toLowerCase().includes(search.toLowerCase()))
             }
         }
         SetExercises(exs)
-    }, [bodyparts, equipments,search])
+    }, [bodyparts, equipments, search])
     return (
         <IonPage>
             <Header>
@@ -80,7 +86,7 @@ export const ExerciseList: React.FC<ExerciseListProps> = (props) => {
                         <IonIcon icon={filter} />
                     </IonButton>
                     <PopoverButton>
-                        <PopoverItem routerLink={'/create-exercise'} button >Create Exercise</PopoverItem>
+                        <PopoverItem onClick={() => ShowNewExerciseModal({ mode: 'ios', swipeToClose: true })} button >Create Exercise</PopoverItem>
                     </PopoverButton>
                 </IonButtons>
             </Header>
@@ -90,8 +96,8 @@ export const ExerciseList: React.FC<ExerciseListProps> = (props) => {
                 rowCount={exercises.length}
                 width={width}
                 height={height - 50}
-                style={{backgroundColor:'var(--ion-background-color, #fff)'}}
-                containerStyle={{backgroundColor:'var(--ion-background-color, #fff)'}}
+                style={{ backgroundColor: 'var(--ion-background-color, #fff)' }}
+                containerStyle={{ backgroundColor: 'var(--ion-background-color, #fff)' }}
                 rowRenderer={({
                     key,
                     index,

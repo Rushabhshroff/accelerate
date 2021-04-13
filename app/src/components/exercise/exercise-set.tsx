@@ -85,16 +85,28 @@ export const ExerciseSet: React.FC<ExerciseSet> = (props) => {
     }, [set.timestamp])
     useEffect(() => {
         if (props.OnMutate) props.OnMutate()
+        console.log(set);
     }, [set.setType, set.weight, set.distance, set.time, set.reps])
     useEffect(() => {
         UpdateSet(props.set)
     }, [props.set])
     const SetDone = () => {
+        if (set.timestamp) {
+            UpdateSet({
+                timestamp: undefined
+            })
+            return;
+        }
         let enables = ExercisePropsMap[exercise.category]
         let updates: any = {}
         for (let key in enables) {
             if (set[key] == undefined && prevSet) {
                 updates[key] = prevSet.set[key]
+            } else if (set[key] == undefined && key !== 'time') {
+                const unit = exercise.units[key] || AppSettings.current.units[key]
+                updates[key] = new Unit({ value: 0, _unit: unit || '' })
+            } else if (key === 'time') {
+                updates[key] = "00:00"
             }
         }
         UpdateSet({

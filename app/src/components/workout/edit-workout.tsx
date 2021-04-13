@@ -1,5 +1,5 @@
-import { IonButton, IonButtons, IonCard, IonCardHeader, IonCardTitle, IonCol, IonContent, IonDatetime, IonIcon, IonInput, IonItem, IonLabel, IonPage, IonText, IonTitle, useIonAlert, useIonModal, useIonToast } from '@ionic/react'
-import { chevronDown, create, createOutline, } from 'ionicons/icons'
+import { IonButton, IonButtons, IonCard, IonCardHeader, IonCardTitle, IonCol, IonContent, IonDatetime, IonIcon, IonInput, IonItem, IonLabel, IonPage, IonText, IonTitle, isPlatform, useIonAlert, useIonModal, useIonRouter, useIonToast } from '@ionic/react'
+import { arrowBack, chevronBack, chevronDown, create, createOutline, } from 'ionicons/icons'
 import moment from 'moment'
 import React, { useEffect, useState } from 'react'
 import { Exercise, IExercise, IWorkout, Workout } from '../../database/models'
@@ -20,7 +20,6 @@ export interface EditWorkout {
     liveMode?: boolean,
     templateMode?: boolean,
     onDismiss?: () => void,
-    onDiscard?: () => void
     workout?: IWorkout,
     exercises?: IExercise[]
 }
@@ -28,6 +27,7 @@ export interface EditWorkout {
 export const EditWorkout: React.FC<EditWorkout> = (props) => {
     const liveMode = props.liveMode
     const templateMode = props.templateMode
+    const router = useIonRouter()
     const [ShowAlert] = useIonAlert()
     const [ShowToast] = useIonToast()
     const [workout, SetWorkout] = useObjectReducer<IWorkout>(props.workout || new Workout({ name: "Workout", startTimestamp: Date.now() }))
@@ -68,7 +68,7 @@ export const EditWorkout: React.FC<EditWorkout> = (props) => {
             try {
                 await SaveWorkout(new Workout(workout), exercises.map((e) => new Exercise(e)), liveMode, templateMode);
                 WorkoutController.reset()
-                if (props.onDismiss) props.onDismiss()
+                OnDismiss()
                 ShowInterstitial()
             } catch (err) {
                 ShowToast(err.message, 1000)
@@ -84,6 +84,21 @@ export const EditWorkout: React.FC<EditWorkout> = (props) => {
             f();
         }
     }
+    const OnDismiss = () => {
+        if (props.onDismiss) {
+            props.onDismiss()
+        } else {
+            router.goBack()
+        }
+    }
+    const OnDiscard = () => {
+        ShowAlert("Are you sure you want to discard this workout?", [{ text: "No", role: 'cancel' }, {
+            text: "Yes Discard", handler: () => {
+                WorkoutController.reset();
+                OnDismiss()
+            }
+        }])
+    }
     const [OpenExerciseModal, CloseExerciseModal] = useIonModal(() => <ExerciseList onSelectionChange={OnAddExercises} selectionMode={true} selectionType='multiple' onDismiss={CloseExerciseModal} />)
     const [ShowReorderModal, CloseReorderModal] = useIonModal(() => <ExerciseReorder OnDismiss={CloseReorderModal} exercises={exercises} OnDone={(ex) => SetExercises([...ex])} />)
     const [OpenSupersetModal, CloseSupersetModal] = useIonModal(() => <CreateSuperset OnDismiss={CloseSupersetModal} exercises={exercises} OnDone={(ex) => SetExercises([...ex])} />)
@@ -92,8 +107,8 @@ export const EditWorkout: React.FC<EditWorkout> = (props) => {
         <IonPage>
             <Header>
                 <IonButtons slot='start'>
-                    <IonButton onClick={props.onDismiss}>
-                        <IonIcon style={{ fontSize: 25 }} color='primary' icon={chevronDown} />
+                    <IonButton onClick={OnDismiss}>
+                        <IonIcon style={{ fontSize: 25 }} color='primary' icon={isPlatform('ios') ? chevronBack : arrowBack} />
                     </IonButton>
                     {liveMode ? <TimerButton /> : null}
                 </IonButtons>
@@ -121,8 +136,8 @@ export const EditWorkout: React.FC<EditWorkout> = (props) => {
                     )
                 })}
                 <section>
-                    <IonButton onClick={() => OpenExerciseModal({ mode: 'ios' })}>+ Add Exercise</IonButton>
-                    {liveMode ? <IonButton onClick={props.onDiscard} fill='clear' color='danger'>Discard Workout</IonButton> : null}
+                    <IonButton mode='ios' onClick={() => OpenExerciseModal({ mode: 'ios' })}>+ Add Exercise</IonButton>
+                    {liveMode ? <IonButton onClick={OnDiscard} fill='clear' color='danger'>Discard Workout</IonButton> : null}
                 </section>
             </IonContent>
         </IonPage>

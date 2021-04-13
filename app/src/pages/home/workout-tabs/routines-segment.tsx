@@ -1,4 +1,4 @@
-import { IonButton, IonButtons, IonIcon, IonItem, IonText, useIonModal, useIonRouter } from '@ionic/react'
+import { IonButton, IonButtons, IonContent, IonIcon, IonItem, IonText, useIonModal, useIonRouter } from '@ionic/react'
 import { addCircleOutline, chevronForward, folderOpen, folderOpenOutline } from 'ionicons/icons'
 import React, { useEffect, useState } from 'react'
 import { RouteComponentProps, useLocation } from 'react-router'
@@ -6,6 +6,7 @@ import { EditWorkout, TouchableOpcity, WorkoutRoutineListItem } from '../../../c
 import { Workout } from '../../../database'
 import { WorkoutRoutine } from '../../../database/models/workout-routine'
 import { useInAppPurchase } from '../../../hooks/useInAppPurchase'
+import { useStartWorkout } from '../../../hooks/useStartWorkout'
 import './styles.scss'
 
 export const RoutinesSegment: React.FC<RouteComponentProps> = (props) => {
@@ -13,7 +14,7 @@ export const RoutinesSegment: React.FC<RouteComponentProps> = (props) => {
     const router = useIonRouter()
     const [routines, SetRoutines] = useState<WorkoutRoutine[]>([])
     const { fitnessPlus } = useInAppPurchase()
-    const [NewRoutine, Dismiss] = useIonModal(() => <EditWorkout exercises={[]} workout={new Workout({ name: 'Routine', startTimestamp: Date.now() })} templateMode={true} liveMode={false} onDismiss={OnDimissRoutineModal} />)
+    const StartWorkout = useStartWorkout()
     useEffect(() => {
         Refresh()
     }, [pathname])
@@ -26,31 +27,28 @@ export const RoutinesSegment: React.FC<RouteComponentProps> = (props) => {
         if (routines.length >= 5 && !fitnessPlus) {
             router.push('/subscription')
         } else {
-            NewRoutine({ mode: 'ios', swipeToClose: true })
+
         }
     }
-    const OnDimissRoutineModal = () => {
-        Refresh()
-        Dismiss()
-    }
     return (
-        <>
-            {/*<section>
-                <IonButton>Browse Routines</IonButton>
-            </section>*/}
-            <RoutinesFolder onAdd={OnAddRoutine} >
+        <IonContent>
+            <section>
+                <IonButton  onClick={StartWorkout}>Start Empty Workout</IonButton>
+            </section>
+            <RoutinesFolder title='Your Routies' onAdd={OnAddRoutine} >
                 {routines.map((r) => {
                     return (
                         <WorkoutRoutineListItem key={r._id} routine={r} />
                     )
                 })}
             </RoutinesFolder>
-        </>
+        </IonContent>
     )
 }
 
 interface RoutinesFolderProps {
-    onAdd: () => void
+    onAdd?: () => void,
+    title?: string
 }
 const RoutinesFolder: React.FC<RoutinesFolderProps> = (props) => {
 
@@ -61,17 +59,17 @@ const RoutinesFolder: React.FC<RoutinesFolderProps> = (props) => {
     return (
         <section className={`collapsible ${state}`}>
             <IonItem lines='none'>
-                <TouchableOpcity onClick={Toggle} slot='start'>
+                <IonButton fill='clear' onClick={Toggle} slot='start'>
                     <IonIcon className='arrow' size='small' color='primary' icon={chevronForward} />
-                </TouchableOpcity>
-                <IonText>Your Routines</IonText>
-                <TouchableOpcity onClick={props.onAdd} slot='end'>
+                </IonButton>
+                <IonText>{props.title}</IonText>
+                {props.onAdd ? <IonButton routerLink='/routine/create' style={{height:50}} fill='clear' onClick={props.onAdd} slot='end'>
                     <IonIcon size='large' color='primary' icon={addCircleOutline} />
-                </TouchableOpcity>
+                </IonButton> : null}
             </IonItem>
             <div className='child'>
                 {props.children}
             </div>
-        </section>
+        </section >
     )
 }

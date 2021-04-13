@@ -5,7 +5,7 @@ import { InAppPurchases } from './in-app-purchase';
 export const Routes = Router()
 
 Routes.use('/auth', AuthRoutes)
-Routes.use('/in-app-purchases', InAppPurchases)
+Routes.use('/in-app-purchase', InAppPurchases)
 
 export * from './fitness-partners'
 export * from './user'

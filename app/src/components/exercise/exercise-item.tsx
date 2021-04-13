@@ -1,4 +1,4 @@
-import { IonButton, IonButtons, IonCol, IonIcon, IonItem, IonRow, IonText, IonTextarea, useIonActionSheet, useIonModal, useIonPicker } from '@ionic/react'
+import { IonButton, IonButtons, IonCol, IonIcon, IonItem, IonRouterLink, IonRow, IonText, IonTextarea, useIonActionSheet, useIonModal, useIonPicker, useIonRouter } from '@ionic/react'
 import { add, checkmark, close, ellipsisHorizontal, ellipsisHorizontalCircleOutline, ellipsisVertical, gitCompareOutline, remove, repeatOutline, timerOutline } from 'ionicons/icons'
 import React, { useEffect, useState } from 'react'
 import { Exercise, IExercise, WorkoutSet } from '../../database/models'
@@ -44,6 +44,7 @@ export const ExerciseItem: React.FC<ExerciseItem> = (props) => {
     const [prevExercise, SetPrevExercise] = useState<Exercise | undefined>(undefined);
     const info = ExerciseData.find(exercise.exerciseId);
     const liveMode = props.liveMode || false
+    const router = useIonRouter()
     useEffect(() => {
         SetExercise(props.exercise)
     }, [props.exercise.superset])
@@ -143,12 +144,12 @@ export const ExerciseItem: React.FC<ExerciseItem> = (props) => {
             <div className='px-3'>
                 <IonItem className='ion-no-padding' lines='none'>
                     <ExerciseThumbnail thumbUrl={info?.thumbnail} exerciseName={exercise.exerciseName} />
-                    <TouchableOpcity>
+                    <IonRouterLink routerLink={`/exercise/details/${exercise.exerciseId}`}>
                         <IonText color='primary' className='block-text medium ml-2'>{exercise.exerciseName}</IonText>
-                    </TouchableOpcity>
+                    </IonRouterLink>
                     <IonButtons slot='end'>
                         <IonButton onClick={HandleOptions}>
-                            <IonIcon size='large' icon={ellipsisVertical} />
+                            <IonIcon color='primary' size='large' icon={ellipsisVertical} />
                         </IonButton>
                     </IonButtons>
                 </IonItem>
@@ -172,7 +173,7 @@ export const ExerciseItem: React.FC<ExerciseItem> = (props) => {
                 )
             })}
             <section>
-                <IonButton onClick={AddSet} color='light'>+ Add Set</IonButton>
+                <IonButton mode='ios' onClick={AddSet} color='light'>+ Add Set</IonButton>
             </section>
         </div>
     )
