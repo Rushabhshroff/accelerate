@@ -44,11 +44,10 @@ export class InAppPurchase {
         if (!isPlatform('capacitor')) {
             return;
         }
+        store.verbosity = store.ERROR
         store.register(this.PRODUCTS);
         const url = `${Api.baseUrl}/in-app-purchase`
         store.validator = url
-        console.info(JSON.stringify(store.validator));
-        console.info(url);
         store.when('product')
             .approved(OnProductApproved)
             .verified(OnProductVerified)
@@ -67,7 +66,6 @@ export class InAppPurchase {
 }
 
 function OnProductApproved(product: IAPProduct) {
-    console.info("APPROVED: " + product.id);
     /*product.verify().error((err: any) => {
         console.info(JSON.stringify(err))
     })*/
@@ -75,7 +73,6 @@ function OnProductApproved(product: IAPProduct) {
 }
 
 function OnProductVerified(product: IAPProduct) {
-    console.log("VERIFIED: " + product.id)
     product.finish()
 }
 

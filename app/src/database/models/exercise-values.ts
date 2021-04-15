@@ -37,12 +37,4 @@ export class ExerciseValues {
         }
         return a;
     }
-    static ApplyConvertion(a: ExerciseValues, currentunits: Units) {
-        for (let key in currentunits) {
-            if (a[key]) {
-                a[key] = Units.convert(currentunits[key], AppSettings.current.units[key], a[key])
-            }
-        }
-        return a;
-    }
 }

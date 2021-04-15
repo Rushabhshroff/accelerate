@@ -36,7 +36,7 @@ export class WorkoutSet implements WorkoutSet {
     }
     toExerciseValue() {
         return {
-            reps: this.reps || 0,
+            reps: this.reps?.value || 0,
             time: this.time ? Duration.fromHHMMSS(this.time).milliseconds() : 0,
             distance: this.distance?.current?.value || 0,
             weight: this.weight?.current?.value || 0,

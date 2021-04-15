@@ -11,7 +11,6 @@ export function useInAppPurchase(OnNewPurchase?:(product:IAPProduct)=>void) {
         if (isPlatform('capacitor')) {
             const OnUpdate = (product: IAPProduct) => {
                 SetOwned(store.products.filter(f => f.owned))
-                console.info(JSON.stringify(product))
             }
             const OnError = (err: IAPError) => {
                 Alert({

@@ -45,7 +45,7 @@ export const WorkoutPreferences: React.FC<WorkoutPreferences> = (props) => {
                             return (
                                 <IonSelectOption onChange={(e) => {
                                     console.log(e)
-                                }} key={key} value={key} style={{ textTransform: 'capitalize' }}>{key.replaceAll('_', ' ')}</IonSelectOption>
+                                }} key={key} value={key} style={{ textTransform: 'capitalize' }}>{key.replace(/_/g, ' ')}</IonSelectOption>
                             )
                         })}
                     </IonSelect>
