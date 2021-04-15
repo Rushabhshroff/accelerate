@@ -11,8 +11,8 @@ export const WorkoutRoutineListItem: React.FC<WorkoutRoutineListItem> = (props) 
     const StartWorkout = useStartRoutine(routine)
     return (
         <IonCard className='workout-routine-list-item'>
-            <IonItem detail routerLink={`/routine/${routine._id}`} lines='full'>{routine.name}</IonItem>
-            <IonRouterLink routerLink={`/routine/${routine._id}`} color='dark'>
+            <IonItem detail routerLink={`/routine/details/${routine._id}`} lines='full'>{routine.name}</IonItem>
+            <IonRouterLink routerLink={`/routine/details/${routine._id}`} color='dark'>
                 {routine.exercises.map((ex,i) => {
                     return (
                         <IonText key={i} className='text-item'>{ex.sets.length} x {ex.exerciseName}</IonText>

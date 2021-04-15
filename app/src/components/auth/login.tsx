@@ -59,7 +59,7 @@ export const LoginPage: React.FC<LoginPage> = (props) => {
                 </IonButton>
                     <IonText className='m-2'>Don't have an account? <IonRouterLink routerDirection='none' routerLink='/register'>Sign Up</IonRouterLink></IonText>
                     <div style={{ flex: 1 }} />
-                    <IonText className='m-2 text-center'>By using this app you agree to our <IonRouterLink>Terms of Service</IonRouterLink> and <IonRouterLink>Privacy Policy</IonRouterLink></IonText>
+                    <IonText className='m-2 text-center'>By using this app you agree to our <IonRouterLink routerLink='/terms_and_conditions'>Terms of Service</IonRouterLink> and <IonRouterLink routerLink='/privacy_policy'>Privacy Policy</IonRouterLink></IonText>
                 </section>
             </IonContent>
         </IonPage>

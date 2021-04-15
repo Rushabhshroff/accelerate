@@ -23,7 +23,7 @@ export const CreateExercise: React.FC<CreateExercise> = (props) => {
     })
     const OnSubmit = async () => {
         const customExCount = ExerciseData.dataset.filter((e) => e.custom === true).length
-        if (customExCount >= 10 && !fitnessPlus) {
+        if (customExCount >= 10 && !fitnessPlus && !props.onDismiss) {
             router.push('/subscription')
         } else {
             await ExerciseData.Create(form)

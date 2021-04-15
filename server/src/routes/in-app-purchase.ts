@@ -7,10 +7,8 @@ import { iap as keyObject } from '../config.json';
 import { HandleIAPResponse, PurchaseResponseErrors } from '../controllers/in-app-purchase';
 export const InAppPurchases = Router()
 
-InAppPurchases.use(VerifyUserToken)
-
 InAppPurchases.post('/', ErrorProtectedRoute(async (req, res) => {
-
+    console.log(req.body)
     var platformMap: { [key: string]: "google" | "apple" | undefined } = {
         "android-playstore": "google",
         "ios-appstore": "apple"
@@ -24,15 +22,16 @@ InAppPurchases.post('/', ErrorProtectedRoute(async (req, res) => {
         return;
     }
     var payment = {
-        receipt: req.body.transaction.receipt,
+        receipt: platform == 'apple' ? req.body.transaction.appStoreReceipt : req.body.transaction.purchaseToken,
         productId: req.body.id,
         packageName: "fitness.accelerate",
-        subscription: (req.body.transaction?.type == "free subscription" || req.body.transaction?.type == "paid subscription") ? true : false,
+        subscription: (req.body.type == "free subscription" || req.body.type == "paid subscription") ? true : false,
         keyObject: platform == 'google' ? keyObject : undefined,
         secret: platform == 'apple' ? "<IOS-SECRET-HERE>" : undefined
     };
-
     iap.verifyPayment(platformMap[req.body.transaction.type], payment, async (error: any, response: any) => {
+        console.log(error)
+        console.log(response);
         try {
             let valid = HandleIAPResponse(platform, error, response)
             if (valid) {
@@ -48,6 +47,7 @@ InAppPurchases.post('/', ErrorProtectedRoute(async (req, res) => {
                 })
             }
         } catch (err) {
+            console.log(err);
             if (err.code) {
                 res.send({
                     ok: false,

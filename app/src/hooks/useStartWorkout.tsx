@@ -1,18 +1,14 @@
 import { useIonAlert, useIonModal, useIonRouter } from '@ionic/react';
-import React from 'react'
-import { EditWorkout } from '../components';
-import { RoutineToWorkout } from '../components/workout/workout-functions';
-import { WorkoutRoutine } from '../database/models/workout-routine';
+import { Workout } from '../database';
 import { WorkoutController } from '../utils';
 
 
-export function useStartRoutine(routine?: WorkoutRoutine) {
+export function useStartWorkout(date?: number) {
     const router = useIonRouter()
-    const { workout, exercises } = RoutineToWorkout(routine);
     const [Alert] = useIonAlert()
     const Start = () => {
-        WorkoutController.active = workout
-        WorkoutController.exercises = exercises
+        WorkoutController.active = new Workout({ name: "Workout", startTimestamp: date || Date.now() })
+        WorkoutController.exercises = []
         WorkoutController.events.emit('change')
         router.push('/workout/current')
     }
@@ -23,6 +19,11 @@ export function useStartRoutine(routine?: WorkoutRoutine) {
                 message: "Your current workout will be discarded. This cannot be undone.",
                 buttons: [
                     { text: 'cancel', role: 'cancel' },
+                    {
+                        text: "Resume Current", handler: () => {
+                            router.push('/workout/current')
+                        }
+                    },
                     {
                         text: 'Yes Discard', handler: () => {
                             Start()

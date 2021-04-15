@@ -8,7 +8,7 @@ import { WorkoutSegment, RoutinesSegment } from '.'
 import { PendingWorkout } from '../../../components/workout/pending-workout';
 
 export const WorkoutTab: React.FC<RouteComponentProps> = (props) => {
-    const [segment, SetSegment] = useState<'workout' | 'routine'>('workout')
+    const [segment, SetSegment] = useState<'workout' | 'routine'>('routine')
     const [ShowExerciseList, HideExerciseList] = useIonModal(() => <ExerciseList onDismiss={HideExerciseList} />)
     return (
         <IonPage>
@@ -23,23 +23,23 @@ export const WorkoutTab: React.FC<RouteComponentProps> = (props) => {
                 </IonToolbar>
                 <div style={{ padding: isPlatform('ios') ? '5px 15px' : '' }}>
                     <IonSegment onIonChange={e => SetSegment(e.detail.value as 'workout' | 'routine' || 'workout')} value={segment}>
-                        <IonSegmentButton value="workout">
-                            <IonLabel>Workout</IonLabel>
-                        </IonSegmentButton>
                         <IonSegmentButton value="routine">
                             <IonLabel>Routines</IonLabel>
+                        </IonSegmentButton>
+                        <IonSegmentButton value="workout">
+                            <IonLabel>History</IonLabel>
                         </IonSegmentButton>
                     </IonSegment>
                 </div>
             </Header>
 
-            <IonContent>
-                <SwipeableViews style={{ width: '100%', height: '100%' }} index={segment == 'workout' ? 0 : 1} onChangeIndex={(i) => SetSegment(i == 0 ? 'workout' : 'routine')}>
-                    <WorkoutSegment {...props} />
-                    <RoutinesSegment {...props} />
-                </SwipeableViews>
-            </IonContent>
-            <PendingWorkout/>
+            <SwipeableViews style={{ width: '100%', height: '100%' }} index={segment == 'workout' ? 1 : 0} onChangeIndex={(i) => SetSegment(i == 0 ? 'routine' : 'workout')}>
+                <RoutinesSegment {...props} />
+                <WorkoutSegment {...props} />
+            </SwipeableViews>
+            <div style={{ marginBottom: 0 }}>
+                <PendingWorkout />
+            </div>
         </IonPage>
     )
 }

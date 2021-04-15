@@ -1,2 +1,4 @@
 export * from './workout-details'
-export * from './workout-routine'
+export * from './routine/routine-details'
+export * from './workout-edit'
+export * from './routine'

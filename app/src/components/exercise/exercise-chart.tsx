@@ -34,7 +34,7 @@ export const ExerciseChart: React.FC<ExerciseChart> = (props) => {
                 {ExerciseGraphOptions[props.exercise.category].map((e) => {
                     let selected = e === chartType
                     return (
-                        <IonChip key={e} onClick={() => SetChartType(e)} color={selected ? 'primary' : 'medium'} outline >{e.replaceAll('-', ' ')}</IonChip>
+                        <IonChip key={e} onClick={() => SetChartType(e)} color={selected ? 'primary' : 'medium'} outline >{e.replace(/-/g, ' ')}</IonChip>
                     )
                 })}
             </div>

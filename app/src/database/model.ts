@@ -20,7 +20,7 @@ function model<T extends Document = any, X = unknown>(type: string) {
             this.type = type
             this._id = v1()
             if (obj) {
-                return Object.assign(this, obj)
+                Object.assign(this, obj)
             }
             if (forceId) {
                 this._id = v1();

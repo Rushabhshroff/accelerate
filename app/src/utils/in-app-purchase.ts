@@ -1,4 +1,5 @@
 import { IAPError, IAPProduct, InAppPurchase2 as store } from '@ionic-native/in-app-purchase-2'
+import { isPlatform } from '@ionic/react';
 import { Api } from '../api';
 export class InAppPurchase {
     private static ready = false;
@@ -13,8 +14,9 @@ export class InAppPurchase {
         }
     ]
     static get Cache() {
-        let cache = localStorage.getItem('iap') as IAPProduct[] | null
-        if (cache) {
+        let data = localStorage.getItem('iap') as string | null 
+        if (data) {
+            let cache = JSON.parse(data) as IAPProduct[];
             let l = cache.length
             cache = cache.filter((f) => new Date(f.expiryDate || 0).getTime() > Date.now())
             if (cache.length !== l) {
@@ -33,22 +35,20 @@ export class InAppPurchase {
         if (!cache.some(p => p.id === product.id)) {
             cache.push(product)
         } else {
-            cache.filter((p) => p.id === product.id);
+            cache = cache.filter((p) => p.id === product.id);
             cache.push(product);
         }
         localStorage.setItem('iap', JSON.stringify(cache))
     }
     static initialize() {
-        console.error("Called")
+        if (!isPlatform('capacitor')) {
+            return;
+        }
+        store.verbosity = store.ERROR
         store.register(this.PRODUCTS);
-        store.validator = `${Api.baseUrl}/in-app-purchase`
-        store.when('products')
-            .invalid((e:any) => {
-                console.log(JSON.stringify(e))
-            })
-            .valid((prodcut: IAPProduct) => {
-                console.log(prodcut);
-            })
+        const url = `${Api.baseUrl}/in-app-purchase`
+        store.validator = url
+        store.when('product')
             .approved(OnProductApproved)
             .verified(OnProductVerified)
             .owned(OnProductOwned)
@@ -66,7 +66,10 @@ export class InAppPurchase {
 }
 
 function OnProductApproved(product: IAPProduct) {
-    product.verify()
+    /*product.verify().error((err: any) => {
+        console.info(JSON.stringify(err))
+    })*/
+    product.finish()
 }
 
 function OnProductVerified(product: IAPProduct) {
@@ -78,5 +81,5 @@ function OnProductOwned(product: IAPProduct) {
 }
 
 function OnError(error: IAPError) {
-    console.log(error);
+    console.log(error.code + " " + error.message);
 }

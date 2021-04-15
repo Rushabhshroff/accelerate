@@ -1,9 +1,9 @@
 import { Exercise, Workout } from "../../database";
-import { WorkoutRoutine } from "../../database/models/workout-routine";
+import { IWorkoutRoutine, WorkoutRoutine } from "../../database/models/workout-routine";
 
 export async function SaveWorkout(workout: Workout, exercises: Exercise[], liveMode?: boolean, asTemplate?: boolean) {
     if (asTemplate) {
-        CreateRoutine(workout.name, exercises,workout._id,workout._rev)
+        CreateRoutine(workout.name, exercises, workout._id, workout._rev)
     } else {
         exercises = exercises.filter((e) => e.validateSets())
         if (exercises.length > 0) {
@@ -50,19 +50,31 @@ export async function CreateRoutine(name: string, exercises: Exercise[], _id?: s
         delete ex.timestamp
         return ex
     })
-    let ob = { name: name, exercises: exs, _id, _rev} as any
+    let ob = { name: name, exercises: exs, _id, _rev } as any
     let routine = new WorkoutRoutine(ob)
+    console.log(routine);
     await routine.save()
 }
 
-export function RoutineToWorkout(routine?: WorkoutRoutine,withId?:boolean) {
+export function RoutineToWorkout(routine?: IWorkoutRoutine, withId?: boolean) {
     let workout = new Workout({ name: routine?.name || 'Workout', startTimestamp: Date.now() })
-    if(withId && routine){
-        workout._id = routine._id 
-        workout._rev = routine._rev
+    let exercises = routine?.exercises.map((ex) => {
+        return new Exercise({
+            ...ex,
+            workoutId: workout._id
+        })
+    })
+    console.log(routine);
+    if (withId && routine) {
+        if (routine._id) {
+            workout._id = routine._id
+            if (routine._rev) {
+                workout._rev = routine._rev
+            }
+        }
     }
     return {
         workout: workout,
-        exercises: routine?.exercises.map((e) => new Exercise(e)) || []
+        exercises: exercises || []
     }
 }

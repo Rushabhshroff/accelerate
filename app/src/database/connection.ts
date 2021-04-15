@@ -8,16 +8,13 @@ export function connection<T>() {
     const token = Auth.token
     PouchDB.plugin(PouchDbFind);
     PouchDB.plugin(cordovaSqlitePlugin);
-    if (!isPlatform('mobile') || isPlatform('mobileweb')) {
-        return new PouchDB<T>(token?token.sub:'guest.db');
-    } else {
-        return new PouchDB<T>(token?token.sub:'guest.db', { adapter: 'cordova-sqlite' });
-    }
+    return new PouchDB<T>(token?token.sub:'guest.db',{size:100});
 }
 
 export async function init_database() {
+    console.log(JSON.stringify(await connection().info()))
     await connection().createIndex({ index: { fields: ['type'] } })
     await connection().createIndex({ index: { fields: ['name'] } })
     await connection().createIndex({ index: { fields: ['timestamp'] } })
-    console.log(await connection().info())
+    
 }

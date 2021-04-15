@@ -38,7 +38,7 @@ export class Unit {
     value: number = 0;
     static parse(str: string) {
         let _unit: 'kg' | 'lbs' | 'km' | 'mi' | 'cm' | 'in' | '%' | '' = ''
-        str = str.replaceAll(' ', '')
+        str = str.replace(/ /g, '')
         for (let unit of units) {
             if (str.includes(unit)) {
                 //@ts-ignore

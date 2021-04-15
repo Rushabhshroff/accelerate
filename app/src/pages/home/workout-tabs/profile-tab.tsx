@@ -87,7 +87,6 @@ function WorkoutProgressCharts() {
     useEffect(() => {
         let data = workouts.map((w) => {
             let hours = Number(new Duration((w.endTimestamp || w.startTimestamp) - w.startTimestamp).hours().toFixed(2))
-            console.log(hours);
             return { x: w.startTimestamp, y: hours }
         }).filter((s) => s.y > 0).sort((a, b) => a.x - b.x);
         data = ClubHours(data);

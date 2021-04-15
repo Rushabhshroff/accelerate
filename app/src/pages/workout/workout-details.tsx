@@ -20,7 +20,6 @@ export const WorkoutDetailsPage: React.FC<WorkoutDetailsPage> = (props) => {
     const [Alert] = useIonAlert();
     const [workout, SetWorkout] = useState<undefined | Workout>(undefined)
     const [exercises, SetExercises] = useState<Exercise[]>([])
-    const [OpenEditWorkout, DismissModal] = useIonModal(() => <EditWorkout templateMode={false} onDismiss={OnModalDismiss} liveMode={false} exercises={exercises} workout={workout} />)
     useEffect(() => {
         FetchWorkoutDetails()
     }, [])
@@ -30,6 +29,8 @@ export const WorkoutDetailsPage: React.FC<WorkoutDetailsPage> = (props) => {
             let exs = await w.exercises()
             SetExercises(exs)
             SetWorkout(w)
+            console.log(JSON.stringify(w));
+            console.log(JSON.stringify(exs))
         })().catch((err) => {
             router.goBack()
         })
@@ -68,11 +69,6 @@ export const WorkoutDetailsPage: React.FC<WorkoutDetailsPage> = (props) => {
             }]
         })
     }
-
-    const OnModalDismiss = () => {
-        FetchWorkoutDetails();
-        DismissModal()
-    }
     return (
         <IonPage>
             <Header>
@@ -86,11 +82,11 @@ export const WorkoutDetailsPage: React.FC<WorkoutDetailsPage> = (props) => {
                     </div>
                 </IonItem>
                 <IonButtons slot='end'>
-                    <IonButton>
+                    {/*<IonButton>
                         <IonIcon icon={isPlatform('ios') ? shareOutline : shareSocial} />
-                    </IonButton>
+                    </IonButton>*/}
                     <PopoverButton>
-                        <PopoverItem onClick={() => OpenEditWorkout({ mode: 'ios', swipeToClose: true })} button >Edit</PopoverItem>
+                        <PopoverItem routerLink={`/workout/edit/${workout._id}`} button >Edit</PopoverItem>
                         <PopoverItem onClick={() => CreateTemplate()} button >Save as Routine</PopoverItem>
                         <PopoverItem onClick={Delete} button >Delete</PopoverItem>
                     </PopoverButton>

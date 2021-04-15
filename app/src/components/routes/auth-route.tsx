@@ -8,7 +8,7 @@ export const AuthRoute: React.FC<RouteProps> = (props) => {
     const token = useAuth()
     useEffect(() => {
         if (token) {
-            router.push('/home', 'root')
+            router.push('/home', 'forward','replace')
         }
     },[token])
     return <Route {...props} />
