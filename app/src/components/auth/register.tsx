@@ -1,4 +1,4 @@
-import { IonBackButton, IonButton, IonButtons, IonContent, IonIcon, IonInput, IonItem, IonPage, IonRouterLink, IonText, useIonAlert } from '@ionic/react'
+import { IonBackButton, IonButton, IonButtons, IonContent, IonIcon, IonInput, IonItem, IonPage, IonRouterLink, IonText, useIonAlert, useIonLoading } from '@ionic/react'
 import React, { useState } from 'react'
 import { logo } from '../../icons'
 import { Header } from '../core'
@@ -11,6 +11,7 @@ interface RegisterPage {
 
 export const RegisterPage: React.FC<RegisterPage> = (props) => {
     const [Alert] = useIonAlert()
+    const [ShowLoader,HideLoader] = useIonLoading()
     const [email,SetEmail] = useState<string>('')
     const [password,SetPassword] = useState<string>('')
 
@@ -29,7 +30,9 @@ export const RegisterPage: React.FC<RegisterPage> = (props) => {
             })
             return;
         }
+        ShowLoader()
         Auth.CreateUserWithEmailAndPassword(email, password).catch((err) => {
+            HideLoader()
             Alert({
                 message: err.error || err.message,
                 buttons: [{ text: "Okay" }]
@@ -56,7 +59,7 @@ export const RegisterPage: React.FC<RegisterPage> = (props) => {
                     <IonButton disabled={!validator.isEmail(email) || validator.isEmpty(password)} onClick={Register} type='submit'>
                         Register
                 </IonButton>
-                    <IonText className='m-2'>Already have an account? <IonRouterLink routerDirection='none' routerLink='/login'>Login</IonRouterLink></IonText>
+                    <IonText className='m-2'>Already have an account? <IonRouterLink routerDirection='forward' routerLink='/login'>Login</IonRouterLink></IonText>
                     <div style={{ flex: 1 }} />
                     <IonText className='m-2 text-center'>By using this app you agree to our <IonRouterLink routerLink='/terms_and_conditions'>Terms of Service</IonRouterLink> and <IonRouterLink routerLink='/privacy_policy'>Privacy Policy</IonRouterLink></IonText>
                 </section>

@@ -18,5 +18,10 @@
     <param name="android-package" value="cc.fovea.PurchasePlugin"/>
   </feature>
 
+  <feature name="IonicDeeplinkPlugin">
+    <param name="android-package" value="io.ionic.links.IonicDeeplink"/>
+    <param name="onload" value="true"/>
+  </feature>
+
   
 </widget>

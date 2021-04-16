@@ -1,5 +1,5 @@
 import { Redirect, Route } from 'react-router-dom';
-import { IonApp, IonRouterOutlet, useIonAlert, useIonModal, useIonRouter } from '@ionic/react';
+import { IonApp, IonRouterOutlet, isPlatform, useIonAlert, useIonModal, useIonRouter } from '@ionic/react';
 import { IonReactRouter } from '@ionic/react-router';
 import { ExerciseDetailsPage, Home, RoutineEditPage, WorkoutEditPage } from './pages';
 
@@ -24,9 +24,7 @@ import './theme/variables.css';
 import './theme/fonts.css'
 import './theme/main.scss'
 import { useEffect } from 'react';
-import { AppSettings, SetStatusBarStyle, Unit, WorkoutController } from './utils';
-import { CSS } from './utils/css';
-import { StatusBarStyle } from '@capacitor/core';
+import { AppSettings, WorkoutController } from './utils';
 import { ExerciseList, RegisterPage, LoginPage, ForgotPasswordPage, Settings, CreateExercise, WorkoutPreferences, EditWorkout } from './components';
 import { WorkoutDetailsPage, WorkoutRoutinesPage } from './pages';
 
@@ -47,11 +45,12 @@ import { Website } from './components/website';
 import { Plugins } from '@capacitor/core'
 import { URLUtils } from './utils/url-utils';
 import { IAPProduct, InAppPurchase2 as Store } from '@ionic-native/in-app-purchase-2'
+import { ResetPasswordPage } from './components/auth/reset-password';
 const App: React.FC = () => {
   const [Alert] = useIonAlert()
   useEffect(() => {
     const OnBackButton = () => {
-      if (window.location.pathname.includes('/home')) {
+      if (window.history.length <= 1) {
         Alert('Do you want to exit App?', [{ text: 'Cancel' }, {
           text: "Exit App", handler: () => {
             Plugins.App.exitApp()
@@ -63,7 +62,9 @@ const App: React.FC = () => {
       Alert("Congratulation! Unlocked Accelerate Plus.", [{ text: 'Close' }])
     }
     Plugins.App.addListener('backButton', OnBackButton)
-    Store.when('product').owned(OnProductPurchased)
+    if (isPlatform('capacitor')) {
+      Store.when('product').owned(OnProductPurchased)
+    }
     InitializeApp()
     return () => {
       Plugins.App.removeAllListeners()
@@ -79,6 +80,7 @@ const App: React.FC = () => {
           <AuthRoute exact path='/login' render={(props) => <LoginPage />} />
           <AuthRoute exact path='/register' render={(props) => <RegisterPage />} />
           <AuthRoute exact path='/forgot-password' render={(props) => <ForgotPasswordPage />} />
+          <AuthRoute exact path='/reset-password' render={(props) => <ResetPasswordPage />} />
           <ProtectedRoute path="/home" render={(props) => <Home {...props} />} />
           <ProtectedRoute path='/exercises' exact render={() => <ExerciseList />} />
           <ProtectedRoute path='/edit-profile' exact render={() => <EditProfilePage />} />

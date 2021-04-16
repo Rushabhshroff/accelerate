@@ -26,7 +26,7 @@ export const ExerciseDetailsPage: React.FC<ExerciseDetailsPage> = (props) => {
         Views = [<ExerciseStats key='stats' exercise={exerciseInfo} />,
         <ExerciseHistory key='history' exercise={exerciseInfo} />]
         Tabs = [
-            'Statestics',
+            'Statistics',
             'History'
         ]
         if (info) {

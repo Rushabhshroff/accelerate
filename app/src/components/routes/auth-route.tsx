@@ -1,6 +1,6 @@
-import { IonRedirect, useIonRouter } from '@ionic/react'
+import { useIonRouter } from '@ionic/react'
 import React, { useEffect } from 'react'
-import { Redirect, Route, RouteProps } from 'react-router'
+import {  Route, RouteProps } from 'react-router'
 import { useAuth } from '../../hooks/useAuth'
 
 export const AuthRoute: React.FC<RouteProps> = (props) => {
@@ -8,7 +8,7 @@ export const AuthRoute: React.FC<RouteProps> = (props) => {
     const token = useAuth()
     useEffect(() => {
         if (token) {
-            router.push('/home', 'forward','replace')
+            window.location.replace('/home')
         }
     },[token])
     return <Route {...props} />

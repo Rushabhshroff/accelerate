@@ -1,11 +1,12 @@
 {
   "name": "@accelerate/app",
-  "version": "v0.1b (5)",
+  "version": "v0.1b (6)",
   "private": true,
   "dependencies": {
     "@capacitor/android": "^2.4.7",
     "@capacitor/core": "2.4.7",
     "@ionic-native/admob": "^5.32.0",
+    "@ionic-native/deeplinks": "^5.32.1",
     "@ionic-native/in-app-purchase-2": "^5.32.0",
     "@ionic-native/power-management": "^5.32.0",
     "@ionic/react": "^5.5.0",
@@ -29,6 +30,7 @@
     "cordova-plugin-purchase": "^10.5.3",
     "events": "^3.3.0",
     "file-saver": "^2.0.5",
+    "ionic-plugin-deeplinks": "^1.0.22",
     "ionicons": "^5.4.0",
     "jsonwebtoken": "^8.5.1",
     "lodash": "^4.17.21",

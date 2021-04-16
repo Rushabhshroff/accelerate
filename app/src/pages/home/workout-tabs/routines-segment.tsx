@@ -35,7 +35,7 @@ export const RoutinesSegment: React.FC<RouteComponentProps> = (props) => {
             <section>
                 <IonButton  onClick={StartWorkout}>Start Empty Workout</IonButton>
             </section>
-            <RoutinesFolder title='Your Routies' onAdd={OnAddRoutine} >
+            <RoutinesFolder title='Your Routines' onAdd={OnAddRoutine} >
                 {routines.map((r) => {
                     return (
                         <WorkoutRoutineListItem key={r._id} routine={r} />

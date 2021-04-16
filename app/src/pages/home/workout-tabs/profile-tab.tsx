@@ -1,4 +1,4 @@
-import { IonAvatar, IonButton, IonButtons, IonContent, IonIcon, IonItem, IonPage, IonText } from '@ionic/react'
+import { IonAvatar, IonButton, IonButtons, IonContent, IonIcon, IonItem, IonPage, IonText, useIonRouter } from '@ionic/react'
 import { barbellOutline, calculatorOutline, settingsOutline, statsChartOutline, syncCircleOutline } from 'ionicons/icons'
 import React, { useEffect, useState } from 'react'
 import { RouteComponentProps, useLocation } from 'react-router'
@@ -13,6 +13,7 @@ import { useUserProfile } from '../../../hooks/useUserProfile'
 import { ProfileAvatar } from '../../../components/profile/profile-avatar'
 import { useInAppPurchase } from '../../../hooks/useInAppPurchase'
 export const ProfileTab: React.FC<RouteComponentProps> = (props) => {
+    const router = useIonRouter()
     const profile = useUserProfile()
     const { fitnessPlus } = useInAppPurchase()
     return (
@@ -54,7 +55,7 @@ export const ProfileTab: React.FC<RouteComponentProps> = (props) => {
                 </IonItem>
                 {/*<IonItem button lines='none' detail>
                     <IonIcon slot='start' icon={statsChartOutline} />
-                    <IonText>Statestics</IonText>
+                    <IonText>Statistics</IonText>
     </IonItem>*/}
                 {/*<IonItem button lines='none' detail>
                     <IonIcon slot='start' icon={calculatorOutline} />
@@ -65,7 +66,9 @@ export const ProfileTab: React.FC<RouteComponentProps> = (props) => {
                     <IonText>Convertors</IonText>
     </IonItem>*/}
                 <section className='all-center'>
-                    <IonButton onClick={() => Auth.SignOut()} style={{ width: '80%' }}>Logout</IonButton>
+                    <IonButton onClick={() => {
+                        Auth.SignOut()
+                    }} style={{ width: '80%' }}>Logout</IonButton>
                     <IonText className='m-2'>Made with ❤ in India</IonText>
                     <IonText className='m-2'>{version}</IonText>
                 </section>
